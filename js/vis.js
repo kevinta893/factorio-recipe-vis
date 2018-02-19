@@ -13,8 +13,10 @@ var nodePadding = 20;
 var iterations = 32;
 var spread = false;
 var chartType = "Sankey.Path"
+var startWithPrimatives = false;
 
-//local
+
+//
 var currentRecipe = "burner_mining_drill";
 
 
@@ -37,7 +39,7 @@ $.getJSON("./js/data/recipes.json", function (json, err){
     updateVis();
 });
 
-
+d3.select("#reverse").on("click", updateVis);
 /*
 d3.selectAll(".controls input").on("change", updateKnobs);
 d3.select("#source").on("change", updateSource);
@@ -62,6 +64,8 @@ d3.select("#play").on("click", function() {
 // Updates the visualization parameters and redraws the vis
 function updateVis() {
 
+	getControls();
+
 	//update the sankey type
     d3.select("#chart svg").remove();
     chart = d3.select("#chart").append("svg").chart(chartType);
@@ -81,6 +85,10 @@ function updateVis() {
 	updateRecipe(currentRecipe);
 }
 
+//Gets the page's UI control data
+function getControls(){
+    startWithPrimatives = d3.select("#reverse").node().checked;
+}
 
 //logs chart error events
 function logEvent(name, s) {
@@ -106,7 +114,6 @@ function recipeToSankey(recipeId){
 	var nodeSet = new Set([]);
 	var recipeSankey = recipeToSankeyRecurse(recipeId, nodeSet, 0);
 
-	//turn all link targets and sources into indicies
 
 	//hashmap each item in the set
 	var nodeList = Array.from(nodeSet);
@@ -115,10 +122,18 @@ function recipeToSankey(recipeId){
         nodeIndicies[nodeList[i]] = i;
 	}
 
-
+    //turn all link targets and sources into indicies
 	for (var i  = 0; i < recipeSankey.links.length ; i++) {
         recipeSankey.links[i].source = nodeIndicies[recipeSankey.links[i].source];
         recipeSankey.links[i].target = nodeIndicies[recipeSankey.links[i].target];
+
+        //swap target and source order
+        if (startWithPrimatives == true)
+        {
+        	var temp = recipeSankey.links[i].source
+            recipeSankey.links[i].source = recipeSankey.links[i].target;
+            recipeSankey.links[i].target = temp;
+		}
     }
 
 	return recipeSankey;
