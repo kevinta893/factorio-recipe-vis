@@ -112,7 +112,7 @@ function updateRecipe(recipeId){
 
 function recipeToSankey(recipeId){
 
-	var recipeSankey = recipeToSankeyRecurse(recipeId, 0);
+	var recipeSankey = recipeToSankeyRecurse(recipeId, 1, 0);
 
 
 
@@ -154,7 +154,7 @@ function recipeToSankey(recipeId){
 	return recipeSankey;
 }
 
-function recipeToSankeyRecurse(recipeId, level){
+function recipeToSankeyRecurse(recipeId, amount, level){
     var ret = {
         "nodes" : [],
         "links" : []
@@ -174,12 +174,12 @@ function recipeToSankeyRecurse(recipeId, level){
             ret.links.push({
                 "source": recipeId,
                 "target": recipePart.id,
-                "value": recipePart.amount
+                "value": recipePart.amount * amount
             })
 
 
             //recurse and combine results
-            var deeperRecipe = recipeToSankeyRecurse(recipePart.id, level + 1);
+            var deeperRecipe = recipeToSankeyRecurse(recipePart.id, recipePart.amount * amount, level + 1);
             ret.nodes = ret.nodes.concat(deeperRecipe.nodes);
             ret.links = ret.links.concat(deeperRecipe.links);
         }
