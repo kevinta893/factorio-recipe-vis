@@ -2,7 +2,7 @@
   {
     "id": "raw_wood",
     "name": "Raw Wood",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
       "hands": 10
     }
@@ -10,47 +10,47 @@
   {
     "id": "iron_ore",
     "name": "Iron Ore",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
-      "burner": 4
+      "burner": 0.28
     }
   },
   {
     "id": "copper_ore",
     "name": "Copper Ore",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
-      "burner": 4
+      "burner": 0.28
     }
   },
   {
     "id": "coal",
     "name": "Coal",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
-      "burner": 4
+      "burner": 0.28
     }
   },
   {
     "id": "stone",
     "name": "Stone",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
-      "burner": 4
+      "burner": 0.3675
     }
   },
   {
     "id": "uranium_ore",
     "name": "Uranium Ore",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
-      "electric": 4
+      "electric": 0.2625
     }
   },
   {
     "id": "water",
     "name": "Water",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
       "pump": 100
     }
@@ -58,9 +58,9 @@
   {
     "id": "crude_oil",
     "name": "Crude Oil",
-    "type": "primative",
+    "type": "primitive",
     "mining": {
-      "pumpjack": 4
+      "pumpjack": -1
     }
   },
   {
@@ -204,16 +204,20 @@
     }
   },
   {
-    "id": "electronic circuit",
+    "id": "electronic_circuit",
     "name": "Electronic Circuit",
     "craft_time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "copper_plate",
+          "id": "copper_cable",
           "amount": 3
-        }
+        },
+		{
+			"id": "iron_plate",
+			"amount": 1
+		}
       ]
     }
   },

@@ -17,7 +17,7 @@ var startWithPrimatives = false;
 
 
 //
-var currentRecipe = "burner_mining_drill";
+var currentRecipe = "assembling_machine_1";
 
 
 //Load the recipes database
@@ -107,6 +107,8 @@ function updateRecipe(recipeId){
 	//recursively convert a recipe into data that the visualization engine can handle
 	console.log("Loading recipe: " + recipes[recipeId].name);
 	var sankeyData = recipeToSankey(recipeId);
+	iterations = Math.pow(2, sankeyData.nodes.length);
+	chart.iterations(iterations);
     chart.draw(sankeyData);
 }
 
@@ -157,35 +159,39 @@ function recipeToSankey(recipeId){
 function recipeToSankeyRecurse(recipeId, amount, level){
     var ret = {
         "nodes" : [],
-        "links" : []
+        "links" : [],
+        "amount" : 0
     }
 
     var recipeItem = recipes[recipeId];
 
     ret.nodes.push({"name" : recipeItem.id});
-
-	if (recipeItem.type == "primative"){
-    	return ret;
-	}
-	else{
-    	var recipeItems = recipeItem.recipe0.items;
-    	for (var i = 0; i < recipeItems.length ; i++) {
+    if (recipeItem.type == "primitive"){
+        ret.amount = amount;
+        return ret;
+    }
+    else{
+        var recipeItems = recipeItem.recipe0.items;
+        for (var i = 0; i < recipeItems.length ; i++) {
             var recipePart = recipeItems[i];
-            ret.links.push({
-                "source": recipeId,
-                "target": recipePart.id,
-                "value": recipePart.amount * amount
-            })
+
 
 
             //recurse and combine results
             var deeperRecipe = recipeToSankeyRecurse(recipePart.id, recipePart.amount * amount, level + 1);
             ret.nodes = ret.nodes.concat(deeperRecipe.nodes);
             ret.links = ret.links.concat(deeperRecipe.links);
+            ret.amount += deeperRecipe.amount;
+
+            ret.links.push({
+                "source": recipeId,
+                "target": recipePart.id,
+                "value": deeperRecipe.amount
+            })
         }
 
         return ret;
-	}
+    }
 
 
 }
