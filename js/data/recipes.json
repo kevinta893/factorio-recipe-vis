@@ -1,0 +1,282 @@
+[
+  {
+    "id": "raw_wood",
+    "name": "Raw Wood",
+    "type": "primative",
+    "mining": {
+      "hands": 10
+    }
+  },
+  {
+    "id": "iron_ore",
+    "name": "Iron Ore",
+    "type": "primative",
+    "mining": {
+      "burner": 4
+    }
+  },
+  {
+    "id": "copper_ore",
+    "name": "Copper Ore",
+    "type": "primative",
+    "mining": {
+      "burner": 4
+    }
+  },
+  {
+    "id": "coal",
+    "name": "Coal",
+    "type": "primative",
+    "mining": {
+      "burner": 4
+    }
+  },
+  {
+    "id": "stone",
+    "name": "Stone",
+    "type": "primative",
+    "mining": {
+      "burner": 4
+    }
+  },
+  {
+    "id": "uranium_ore",
+    "name": "Uranium Ore",
+    "type": "primative",
+    "mining": {
+      "electric": 4
+    }
+  },
+  {
+    "id": "water",
+    "name": "Water",
+    "type": "primative",
+    "mining": {
+      "pump": 100
+    }
+  },
+  {
+    "id": "crude_oil",
+    "name": "Crude Oil",
+    "type": "primative",
+    "mining": {
+      "pumpjack": 4
+    }
+  },
+  {
+    "id": "iron_plate",
+    "name": "Iron Plate",
+    "craft_time": 3.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_ore",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "copper_plate",
+    "name": "Copper Plate",
+    "craft_time": 3.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "copper_ore",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "stone_brick",
+    "name": "Stone Brick",
+    "craft_time": 3.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "stone",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "stone_furnace",
+    "name": "Stone Furnace",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "stone",
+          "amount": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "iron_gear_wheel",
+    "name": "Iron Gear Wheel",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_plate",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "iron_gear_wheel",
+    "name": "Iron Gear Wheel",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_plate",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "iron_gear_wheel",
+    "name": "Iron Gear Wheel",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_plate",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "iron_gear_wheel",
+    "name": "Iron Gear Wheel",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_plate",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "pipe",
+    "name": "Pipe",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_plate",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "copper_cable",
+    "name": "Copper Cable",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 2,
+      "items": [
+        {
+          "id": "copper_plate",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "electronic circuit",
+    "name": "Electronic Circuit",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "copper_plate",
+          "amount": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "burner_mining_drill",
+    "name": "Burner Mining Drill",
+    "craft_time": 2,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "iron_plate",
+          "amount": 3
+        },
+        {
+          "id": "iron_gear_wheel",
+          "amount": 3
+        },
+        {
+          "id": "stone_furnace",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "boiler",
+    "name": "Boiler",
+    "craft_time": 2,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "pipe",
+          "amount": 4
+        },
+        {
+          "id": "stone_furnace",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "assembling_machine_1",
+    "name": "Assembling Machine 1",
+    "craft_time": 0.5,
+    "recipe0": {
+      "yield": 1,
+      "items": [
+        {
+          "id": "electronic_circuit",
+          "amount": 3
+        },
+        {
+          "id": "iron_gear_wheel",
+          "amount": 5
+        },
+        {
+          "id": "iron_plate",
+          "amount": 9
+        }
+      ]
+    }
+  }
+]
