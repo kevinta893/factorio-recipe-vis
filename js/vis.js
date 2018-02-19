@@ -111,16 +111,31 @@ function updateRecipe(recipeId){
 }
 
 function recipeToSankey(recipeId){
-	var nodeSet = new Set([]);
-	var recipeSankey = recipeToSankeyRecurse(recipeId, nodeSet, 0);
+
+	var recipeSankey = recipeToSankeyRecurse(recipeId, 0);
 
 
-	//hashmap each item in the set
-	var nodeList = Array.from(nodeSet);
-	var nodeIndicies = {};
-	for (var i  = 0; i < nodeList.length ; i++){
-        nodeIndicies[nodeList[i]] = i;
+
+    //build a set of the nodes
+    var nodeSet = new Set([]);
+	for (var i  = 0; i < recipeSankey.nodes.length ; i++){
+        nodeSet.add(recipeSankey.nodes[i])
 	}
+
+
+    //hashmap each item in the set
+    var nodeIndicies = {};
+    var nodeList = Array.from(nodeSet);
+    var nodeListNames = [];
+    for (var i  = 0; i < nodeList.length ; i++) {
+        nodeIndicies[nodeList[i].name] = i;
+        nodeListNames.push({"name" : recipes[nodeList[i].name].name});
+    }
+
+
+    //assign set to sankey node list
+	recipeSankey.nodes = nodeListNames;
+
 
     //turn all link targets and sources into indicies
 	for (var i  = 0; i < recipeSankey.links.length ; i++) {
@@ -139,7 +154,7 @@ function recipeToSankey(recipeId){
 	return recipeSankey;
 }
 
-function recipeToSankeyRecurse(recipeId, nodeSet, level){
+function recipeToSankeyRecurse(recipeId, level){
     var ret = {
         "nodes" : [],
         "links" : []
@@ -147,9 +162,7 @@ function recipeToSankeyRecurse(recipeId, nodeSet, level){
 
     var recipeItem = recipes[recipeId];
 
-    ret.nodes.push({"name" : recipeItem.name});
-    nodeSet.add(recipeItem.id);
-
+    ret.nodes.push({"name" : recipeItem.id});
 
 	if (recipeItem.type == "primative"){
     	return ret;
@@ -166,7 +179,7 @@ function recipeToSankeyRecurse(recipeId, nodeSet, level){
 
 
             //recurse and combine results
-            var deeperRecipe = recipeToSankeyRecurse(recipePart.id, nodeSet, level + 1);
+            var deeperRecipe = recipeToSankeyRecurse(recipePart.id, level + 1);
             ret.nodes = ret.nodes.concat(deeperRecipe.nodes);
             ret.links = ret.links.concat(deeperRecipe.links);
         }
