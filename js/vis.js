@@ -7,12 +7,12 @@
 var chart = null;
 timer = null;
 
-//Config
+//Visualization Config
 var nodeWidth = 40;
 var nodePadding = 20;
 var iterations = 32;
-var spread = true;
-
+var spread = false;
+var chartType = "Sankey.Path"
 
 //local
 var currentRecipe = "burner_mining_drill";
@@ -34,11 +34,11 @@ $.getJSON("./js/data/recipes.json", function (json, err){
 		recipes[recipe.id] = recipe;
 	}
 	console.log("Recipes Loaded");
-    updateRecipe();
+    updateVis();
 });
 
 
-
+/*
 d3.selectAll(".controls input").on("change", updateKnobs);
 d3.select("#source").on("change", updateSource);
 d3.select("#type").on("change", updateType);
@@ -56,69 +56,49 @@ d3.select("#play").on("click", function() {
 	}
 	d3.select(this).classed("active", timer !== null);
 })
+*/
 
 
-function updateKnobs() {
-	chart
-	  .nodeWidth(numberControl("nodeWidth"))
-	  .nodePadding(numberControl("nodePadding"))
-	  .iterations(numberControl("iterations"))
-	  .spread(checkControl("spread"));
+// Updates the visualization parameters and redraws the vis
+function updateVis() {
+
+	//update the sankey type
+    d3.select("#chart svg").remove();
+    chart = d3.select("#chart").append("svg").chart(chartType);
+    ["click", "mouseover", "mouseout"].forEach(function(evt) {
+        chart.on("node:"+evt, function(node) { logEvent("node:"+evt, node.name); });
+        chart.on("link:"+evt, function(link) { logEvent("link:"+evt, link.source.name+" → "+link.target.name); });
+    });
+
+    //update knobs
+    chart
+		.nodeWidth(nodeWidth)
+		.nodePadding(nodePadding)
+		.iterations(iterations)
+		.spread(spread);
+
+	//update recipe data
+	updateRecipe(currentRecipe);
 }
 
 
-function updateSource() {
-	d3.json(d3.select("#source").node().value, function(error, json) {
-	  chart.draw(json);
-	});
-}
-
-
-function updateType() {
-	var type = d3.select("#type").node().value;
-	d3.select("#chart svg").remove();
-	chart = d3.select("#chart").append("svg").chart(type);
-	["click", "mouseover", "mouseout"].forEach(function(evt) {
-		chart.on("node:"+evt, function(node) { logEvent("node:"+evt, node.name); });
-		chart.on("link:"+evt, function(link) { logEvent("link:"+evt, link.source.name+" → "+link.target.name); });
-	});
-	updateKnobs();
-}
-
-function numberControl(id, value) {
-	var o = d3.select("#"+id);
-	if (typeof value !== "undefined") {
-	  o.node().value = String(value);
-	  updateKnobs();
-	}
-	return Number(o.node().value);
-}
-
-function checkControl(id, value) {
-	var o = d3.select("#"+id);
-	if (typeof value !== "undefined") {
-	  o.node().checked = value;
-	  updateKnobs();
-	}
-	return o.node().checked;
-}
-
+//logs chart error events
 function logEvent(name, s) {
 	var e = d3.select("#events"),
 		l = e.append("div");
 	l.append("span").text(name);
 	l.append("span").text(s);
-	e.node().scrollTop = e.node().scrollHeight;
+	//e.node().scrollTop = e.node().scrollHeight;
 }
 
 
 
 
 
-function updateRecipe(){
+function updateRecipe(recipeId){
 	//recursively convert a recipe into data that the visualization engine can handle
-	console.log("Loading recipe: " + recipes[currentRecipe].name);
-	var sankeyData = recipeToSankey(currentRecipe);
+	console.log("Loading recipe: " + recipes[recipeId].name);
+	var sankeyData = recipeToSankey(recipeId);
     chart.draw(sankeyData);
 }
 
@@ -182,6 +162,3 @@ function recipeToSankeyRecurse(recipeId, nodeSet, level){
 
 }
 
-
-
-updateType();
