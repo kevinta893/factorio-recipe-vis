@@ -117,19 +117,19 @@ function recipeToSankey(recipeId){
 
 
     //build a set of the nodes
-    var nodeSet = new Set([]);
+    var nodeSetIds = new Set([]);
 	for (var i  = 0; i < recipeSankey.nodes.length ; i++){
-        nodeSet.add(recipeSankey.nodes[i])
+        nodeSetIds.add(recipeSankey.nodes[i].name)
 	}
 
 
     //hashmap each item in the set
     var nodeIndicies = {};
-    var nodeList = Array.from(nodeSet);
+    var nodeListIds = Array.from(nodeSetIds);
     var nodeListNames = [];
-    for (var i  = 0; i < nodeList.length ; i++) {
-        nodeIndicies[nodeList[i].name] = i;
-        nodeListNames.push({"name" : recipes[nodeList[i].name].name});
+    for (var i  = 0; i < nodeListIds.length ; i++) {
+        nodeIndicies[nodeListIds[i]] = i;
+        nodeListNames.push({"name" : recipes[nodeListIds[i]].name});
     }
 
 
