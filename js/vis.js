@@ -12,7 +12,7 @@ var nodeWidth = 40;
 var nodePadding = 20;
 var iterations = 32;
 var spread = false;
-var chartType = "Sankey.Path"
+var chartType = "Sankey"
 var startWithPrimatives = false;
 
 
@@ -53,8 +53,10 @@ function initVis(){
 // Updates the visualization parameters and redraws the vis
 function updateVis() {
 
+    //fetch UI data
+    getControls();
 
-	//update the sankey type
+    //update the sankey type
     d3.select("#chart svg").remove();
     chart = d3.select("#chart").append("svg").chart(chartType);
     ["click", "mouseover", "mouseout"].forEach(function(evt) {
@@ -64,15 +66,13 @@ function updateVis() {
 
 
 
-
 	//update recipe data
     console.log("Loading recipe: " + recipes[currentRecipe].name);
     var sankeyData = recipeToSankey(currentRecipe);
     iterations = Math.pow(2, sankeyData.nodes.length);
 
-    //update chart
-    getControls();          //fetch UI data
 
+    //update chart
     chart
         .nodeWidth(nodeWidth)
         .nodePadding(nodePadding)
