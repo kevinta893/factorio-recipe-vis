@@ -28,7 +28,12 @@
         <label for="reverse">Reverse</label>
         <input type="checkbox" id="reverse" value="1">
     </div>
-	<div class="controls">
+    <div class="control">
+        <label for="reset">reset</label>
+        <button id="reset">&#8634;</button>
+    </div>
+
+    <div class="controls">
       <div class="control">
         <label for="source">data</label>
         <select id="source">
@@ -37,29 +42,9 @@
           <option value="https://cdn.rawgit.com/q-m/d3.chart.sankey/master/example/data/product.json">product.json</option>
         </select>
       </div>
-      <div class="control">
-        <label for="nodeWidth">nodeWidth</label>
-        <input type="number" id="nodeWidth" step="1" value="8" min="0">
-      </div>
-      <div class="control">
-        <label for="nodePadding">nodePadding</label>
-        <input type="number" id="nodePadding" step="1" value="15" min="0">
-      </div>
-      <div class="control">
-        <label for="iterations">iterations</label>
-        <input type="number" id="iterations" step="1" value="32" min="0">
-        <button id="rewind">&laquo;</button>
-        <button id="play">&#9654;</button>
-      </div>
 
-      <div class="control">
-        <label for="type">Chart</label>
-        <select id="type">
-          <option>Sankey</option>
-          <option>Sankey.Selection</option>
-          <option>Sankey.Path</option>
-        </select>
-      </div>
+
+
     </div>
 	
 	<div id="chart"></div>

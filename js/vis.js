@@ -16,55 +16,43 @@ var chartType = "Sankey.Path"
 var startWithPrimatives = false;
 
 
-//
 var currentRecipe = "assembling_machine_1";
 
-
-//Load the recipes database
+//recipe database
 var recipes;
-$.getJSON("./js/data/recipes.json", function (json, err){
-	if (err != "success"){
-		console.log("Error cannot load json\n" + err);
-		return;
-	}
 
-	//parse the list into a hashmap
-	var rawList = json;
-	recipes = {};
-	for (var i = 0 ; i < rawList.length ; i++){
-		var recipe = rawList[i];
-		recipes[recipe.id] = recipe;
-	}
-	console.log("Recipes Loaded");
-    updateVis();
-});
 
-d3.select("#reverse").on("click", updateVis);
-/*
-d3.selectAll(".controls input").on("change", updateKnobs);
-d3.select("#source").on("change", updateSource);
-d3.select("#type").on("change", updateType);
-d3.select("#rewind").on("click", function() {
-	numberControl("iterations", 0);
-})
-d3.select("#play").on("click", function() {
-	if (timer !== null) {
-	  clearInterval(timer); timer = null;
-	} else {
-	  timer = setInterval(function() {
-		numberControl("iterations", numberControl("iterations") + 1);
-		return true;
-	  }, 200);
-	}
-	d3.select(this).classed("active", timer !== null);
-})
-*/
+initVis();
+
+
+function initVis(){
+
+    $.getJSON("./js/data/recipes.json", function (json, err){
+        if (err != "success"){
+            console.log("Error cannot load json\n" + err);
+            return;
+        }
+
+        //parse the list into a hashmap
+        var rawList = json;
+        recipes = {};
+        for (var i = 0 ; i < rawList.length ; i++){
+            var recipe = rawList[i];
+            recipes[recipe.id] = recipe;
+        }
+        console.log("Recipes Loaded");
+        updateVis();
+    });
+
+    d3.select("#reverse").on("click", updateVis);
+    d3.select("#reset").on("click", updateVis)
+}
+
 
 
 // Updates the visualization parameters and redraws the vis
 function updateVis() {
 
-	getControls();
 
 	//update the sankey type
     d3.select("#chart svg").remove();
@@ -74,17 +62,44 @@ function updateVis() {
         chart.on("link:"+evt, function(link) { logEvent("link:"+evt, link.source.name+" → "+link.target.name); });
     });
 
-    //update knobs
-    chart
-		.nodeWidth(nodeWidth)
-		.nodePadding(nodePadding)
-		.iterations(iterations)
-		.spread(spread);
+
+
 
 	//update recipe data
-	updateRecipe(currentRecipe);
-}
+    console.log("Loading recipe: " + recipes[currentRecipe].name);
+    var sankeyData = recipeToSankey(currentRecipe);
+    iterations = Math.pow(2, sankeyData.nodes.length);
 
+    //update chart
+    getControls();          //fetch UI data
+
+    chart
+        .nodeWidth(nodeWidth)
+        .nodePadding(nodePadding)
+        .iterations(iterations)
+        .spread(spread);
+    chart.draw(sankeyData);
+
+    //add events for each node
+    var nodes = d3.selectAll(".node")
+        .call(d3.behavior.drag()
+        .origin(function(d) { return d; })
+        .on("dragstart", function() {
+            this.parentNode.appendChild(this); })
+        .on("drag", dragmove));
+}
+function dragmove(d) {
+    var width = $("#chart svg").width();
+    var height = $("#chart svg").height();
+    d3.select(this).attr("transform",
+        "translate(" + (
+            d.x
+        ) + "," + (
+            d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
+        ) + ")");
+    chart.d3.sankey.relayout();
+    d3.selectAll(".link").attr("d", chart.d3.sankey.link());
+}
 //Gets the page's UI control data
 function getControls(){
     startWithPrimatives = d3.select("#reverse").node().checked;
@@ -99,18 +114,6 @@ function logEvent(name, s) {
 	//e.node().scrollTop = e.node().scrollHeight;
 }
 
-
-
-
-
-function updateRecipe(recipeId){
-	//recursively convert a recipe into data that the visualization engine can handle
-	console.log("Loading recipe: " + recipes[recipeId].name);
-	var sankeyData = recipeToSankey(recipeId);
-	iterations = Math.pow(2, sankeyData.nodes.length);
-	chart.iterations(iterations);
-    chart.draw(sankeyData);
-}
 
 function recipeToSankey(recipeId){
 

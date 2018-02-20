@@ -28,7 +28,7 @@ stroke-opacity: .2;
 .control label         { display: block; }
 .control input         { width: 2.5em; }
 .control button        { border: outset 2px; }
-.control button.active { border: inset 2px; }
+.control button:active { border: inset 2px; }
 
 
 #events {
