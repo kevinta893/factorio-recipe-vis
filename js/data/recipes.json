@@ -1,6 +1,6 @@
 [
   {
-    "id": "raw_wood",
+    "id": "raw-wood",
     "name": "Raw Wood",
     "type": "primitive",
     "mining": {
@@ -8,7 +8,7 @@
     }
   },
   {
-    "id": "iron_ore",
+    "id": "iron-ore",
     "name": "Iron Ore",
     "type": "primitive",
     "mining": {
@@ -16,7 +16,7 @@
     }
   },
   {
-    "id": "copper_ore",
+    "id": "copper-ore",
     "name": "Copper Ore",
     "type": "primitive",
     "mining": {
@@ -40,7 +40,7 @@
     }
   },
   {
-    "id": "uranium_ore",
+    "id": "uranium-ore",
     "name": "Uranium Ore",
     "type": "primitive",
     "mining": {
@@ -56,7 +56,7 @@
     }
   },
   {
-    "id": "crude_oil",
+    "id": "crude-oil",
     "name": "Crude Oil",
     "type": "primitive",
     "mining": {
@@ -64,37 +64,37 @@
     }
   },
   {
-    "id": "iron_plate",
+    "id": "iron-plate",
     "name": "Iron Plate",
-    "craft_time": 3.5,
+    "craft-time": 3.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_ore",
+          "id": "iron-ore",
           "amount": 1
         }
       ]
     }
   },
   {
-    "id": "copper_plate",
+    "id": "copper-plate",
     "name": "Copper Plate",
-    "craft_time": 3.5,
+    "craft-time": 3.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "copper_ore",
+          "id": "copper-ore",
           "amount": 1
         }
       ]
     }
   },
   {
-    "id": "stone_brick",
+    "id": "stone-brick",
     "name": "Stone Brick",
-    "craft_time": 3.5,
+    "craft-time": 3.5,
     "recipe0": {
       "yield": 1,
       "items": [
@@ -106,9 +106,9 @@
     }
   },
   {
-    "id": "stone_furnace",
+    "id": "stone-furnace",
     "name": "Stone Furnace",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
@@ -120,56 +120,56 @@
     }
   },
   {
-    "id": "iron_gear_wheel",
+    "id": "iron-gear-wheel",
     "name": "Iron Gear Wheel",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 2
         }
       ]
     }
   },
   {
-    "id": "iron_gear_wheel",
+    "id": "iron-gear-wheel",
     "name": "Iron Gear Wheel",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 2
         }
       ]
     }
   },
   {
-    "id": "iron_gear_wheel",
+    "id": "iron-gear-wheel",
     "name": "Iron Gear Wheel",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 2
         }
       ]
     }
   },
   {
-    "id": "iron_gear_wheel",
+    "id": "iron-gear-wheel",
     "name": "Iron Gear Wheel",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 2
         }
       ]
@@ -178,66 +178,66 @@
   {
     "id": "pipe",
     "name": "Pipe",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 1
         }
       ]
     }
   },
   {
-    "id": "copper_cable",
+    "id": "copper-cable",
     "name": "Copper Cable",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 2,
       "items": [
         {
-          "id": "copper_plate",
+          "id": "copper-plate",
           "amount": 1
         }
       ]
     }
   },
   {
-    "id": "electronic_circuit",
+    "id": "electronic-circuit",
     "name": "Electronic Circuit",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "copper_cable",
+          "id": "copper-cable",
           "amount": 3
         },
 		{
-			"id": "iron_plate",
+			"id": "iron-plate",
 			"amount": 1
 		}
       ]
     }
   },
   {
-    "id": "burner_mining_drill",
+    "id": "burner-mining-drill",
     "name": "Burner Mining Drill",
-    "craft_time": 2,
+    "craft-time": 2,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 3
         },
         {
-          "id": "iron_gear_wheel",
+          "id": "iron-gear-wheel",
           "amount": 3
         },
         {
-          "id": "stone_furnace",
+          "id": "stone-furnace",
           "amount": 1
         }
       ]
@@ -246,7 +246,7 @@
   {
     "id": "boiler",
     "name": "Boiler",
-    "craft_time": 2,
+    "craft-time": 2,
     "recipe0": {
       "yield": 1,
       "items": [
@@ -255,29 +255,29 @@
           "amount": 4
         },
         {
-          "id": "stone_furnace",
+          "id": "stone-furnace",
           "amount": 1
         }
       ]
     }
   },
   {
-    "id": "assembling_machine_1",
+    "id": "assembling-machine-1",
     "name": "Assembling Machine 1",
-    "craft_time": 0.5,
+    "craft-time": 0.5,
     "recipe0": {
       "yield": 1,
       "items": [
         {
-          "id": "electronic_circuit",
+          "id": "electronic-circuit",
           "amount": 3
         },
         {
-          "id": "iron_gear_wheel",
+          "id": "iron-gear-wheel",
           "amount": 5
         },
         {
-          "id": "iron_plate",
+          "id": "iron-plate",
           "amount": 9
         }
       ]
