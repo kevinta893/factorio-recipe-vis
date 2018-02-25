@@ -16,7 +16,7 @@ var chartType = "Sankey"
 var startWithPrimatives = false;
 
 
-var currentRecipe = "rocket-silo";
+var selectedRecipes = ["rocket-silo", "centrifuge", "boiler"];
 
 //recipe database
 var recipes;
@@ -68,9 +68,9 @@ function updateVis() {
 
 
 	//update recipe data
-    console.log("Loading recipe: " + recipes[currentRecipe].name);
-    var sankeyData = recipeToSankey(currentRecipe);
-    iterations = 200 * sankeyData.nodes.length;
+    console.log("Loading recipes: " + selectedRecipes);
+    var sankeyData = recipesToSankey(selectedRecipes);
+    iterations = 16 * sankeyData.nodes.length;
 
 
     //update chart
@@ -120,45 +120,54 @@ function logEvent(name, s) {
 }
 
 
-function recipeToSankey(recipeId){
+function recipesToSankey(recipeList) {
 
-	var recipeSankey = recipeToSankeyRecurse(recipeId, 1, 0);
+    var recipeSankey = {
+        "nodes" : [],
+        "links" : []
+    };
 
+    //get links and nodes for the supplied recipe list
+    for (var i = 0; i < recipeList.length; i++) {
+
+        currentRecipeSankey = recipeToSankeyRecurse(recipeList[i], 1, 0);
+        recipeSankey.nodes = recipeSankey.nodes.concat(currentRecipeSankey.nodes);
+        recipeSankey.links = recipeSankey.links.concat(currentRecipeSankey.links);
+    }
 
 
     //build a set of the nodes
     var nodeSetIds = new Set([]);
-	for (var i  = 0; i < recipeSankey.nodes.length ; i++){
+    for (var i = 0; i < recipeSankey.nodes.length; i++) {
         nodeSetIds.add(recipeSankey.nodes[i].name)
-	}
+    }
 
 
     //hashmap each item in the set
     var nodeIndicies = {};
     var nodeListIds = Array.from(nodeSetIds);
     var nodeListNames = [];
-    for (var i  = 0; i < nodeListIds.length ; i++) {
+    for (var i = 0; i < nodeListIds.length; i++) {
         nodeIndicies[nodeListIds[i]] = i;
-        nodeListNames.push({"name" : recipes[nodeListIds[i]].name});
+        nodeListNames.push({"name": recipes[nodeListIds[i]].name});
     }
 
 
     //assign set to sankey node list
-	recipeSankey.nodes = nodeListNames;
+    recipeSankey.nodes = nodeListNames;
 
 
     //turn all link targets and sources into indicies
-	for (var i  = 0; i < recipeSankey.links.length ; i++) {
+    for (var i = 0; i < recipeSankey.links.length; i++) {
         recipeSankey.links[i].source = nodeIndicies[recipeSankey.links[i].source];
         recipeSankey.links[i].target = nodeIndicies[recipeSankey.links[i].target];
 
         //swap target and source order
-        if (startWithPrimatives == true)
-        {
-        	var temp = recipeSankey.links[i].source
+        if (startWithPrimatives == true) {
+            var temp = recipeSankey.links[i].source
             recipeSankey.links[i].source = recipeSankey.links[i].target;
             recipeSankey.links[i].target = temp;
-		}
+        }
     }
 
 	return recipeSankey;
