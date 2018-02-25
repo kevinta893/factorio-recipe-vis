@@ -16,7 +16,7 @@ var chartType = "Sankey"
 var startWithPrimatives = false;
 
 
-var currentRecipe = "rocket-part";
+var currentRecipe = "rocket-silo";
 
 //recipe database
 var recipes;
@@ -45,6 +45,7 @@ function initVis(){
     });
 
     d3.select("#reverse").on("click", updateVis);
+    d3.select("#spread").on("click", updateVis);
     d3.select("#reset").on("click", updateVis)
 }
 
@@ -88,6 +89,8 @@ function updateVis() {
             this.parentNode.appendChild(this); })
         .on("drag", dragmove));
 }
+
+
 function dragmove(d) {
     var width = $("#chart svg").width();
     var height = $("#chart svg").height();
@@ -104,6 +107,7 @@ function dragmove(d) {
 //Gets the page's UI control data
 function getControls(){
     startWithPrimatives = d3.select("#reverse").node().checked;
+    spread = d3.select("#spread").node().checked;
 }
 
 //logs chart error events
