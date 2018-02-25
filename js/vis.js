@@ -11,12 +11,12 @@ timer = null;
 var nodeWidth = 40;
 var nodePadding = 20;
 var iterations = 32;
-var spread = false;
+var spread = true;
 var chartType = "Sankey"
 var startWithPrimatives = false;
 
 
-var currentRecipe = "assembling_machine_1";
+var currentRecipe = "rocket-part";
 
 //recipe database
 var recipes;
@@ -27,7 +27,7 @@ initVis();
 
 function initVis(){
 
-    $.getJSON("./js/data/recipes.json", function (json, err){
+    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.json", function (json, err){
         if (err != "success"){
             console.log("Error cannot load json\n" + err);
             return;
@@ -69,7 +69,7 @@ function updateVis() {
 	//update recipe data
     console.log("Loading recipe: " + recipes[currentRecipe].name);
     var sankeyData = recipeToSankey(currentRecipe);
-    iterations = Math.pow(2, sankeyData.nodes.length);
+    iterations = 200 * sankeyData.nodes.length;
 
 
     //update chart
@@ -94,6 +94,7 @@ function dragmove(d) {
     d3.select(this).attr("transform",
         "translate(" + (
             d.x
+            //d.x = Math.max(0, Math.min(width - d.dx, d3.event.x))
         ) + "," + (
             d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
         ) + ")");
@@ -169,14 +170,14 @@ function recipeToSankeyRecurse(recipeId, amount, level){
     var recipeItem = recipes[recipeId];
 
     ret.nodes.push({"name" : recipeItem.id});
-    if (recipeItem.type == "primitive"){
+    if (recipeItem.type == "Resource" || recipeItem.type == "Liquid"){
         ret.amount = amount;
         return ret;
     }
     else{
-        var recipeItems = recipeItem.recipe0.items;
-        for (var i = 0; i < recipeItems.length ; i++) {
-            var recipePart = recipeItems[i];
+        var recipeIngredients = recipeItem.recipe.ingredients;
+        for (var i = 0; i < recipeIngredients.length ; i++) {
+            var recipePart = recipeIngredients[i];
 
 
 
