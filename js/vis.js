@@ -15,8 +15,15 @@ var spread = true;
 var chartType = "Sankey"
 var startWithPrimatives = false;
 
-
-var selectedRecipes = ["rocket-silo"];
+//item bar initial config
+var itemSlots = ["advanced-circuit", "boiler", "", "", "",
+    "", "", "", "", "",
+    "", "", "", "", "",
+    "", "", "", "", "steam-engine", ];
+var SLOT_SIZE = 40;             //pixels
+var SLOT_MARGINS = 3;
+var SLOT_OFFSET_TOP = 10;
+var SLOT_OFFSET_LEFT = 10;
 
 //recipe database
 var recipes;
@@ -49,24 +56,56 @@ function initVis(){
         updateVis();
     });
 
+
+    //setup click events
     d3.select("#reverse").on("click", updateVis);
     d3.select("#spread").on("click", updateVis);
     d3.select("#reset").on("click", updateVis)
+
+    //initalize the item bar
+    d3.select("#item-bar").append("svg").selectAll(".item-slot")
+        .data(itemSlots)
+        .enter()
+            .append("rect")
+            .attr("class", "item-slot")
+            .attr("width", SLOT_SIZE)
+            .attr("height", SLOT_SIZE)
+            .attr("x", function(d, i){
+                return (i % 10)* (SLOT_SIZE + SLOT_MARGINS) + SLOT_OFFSET_LEFT;
+            })
+            .attr("y", function(d, i){
+                return (Math.floor(i / 10) * (SLOT_SIZE + SLOT_MARGINS))+ SLOT_OFFSET_TOP;
+            })
+            .attr("value", function(d){
+                return d;
+            })
+            .on("click", function(e){
+                console.log(e);
+                if (e.length <= 0){
+                    getItemBarSelected();
+                    return;
+                }
+            });
+
+
+
+
 }
 
-/**
- * Shuffles array in place.
- * @param {Array} a items An array containing the items.
- */
-function shuffle(a) {
-    var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
+function getItemBarSelected(){
+    var selectedList = $(".item-slot").map(function(){return $(this).attr("value");}).get();
+
+    var hasItemList = [];
+    for (var i = 0 ; i < selectedList.length ; i++){
+        if(selectedList[i].length > 0){
+            hasItemList.push(selectedList[i]);
+        }
     }
+
+    return hasItemList;
 }
+
+
 
 // Updates the visualization parameters and redraws the vis
 function updateVis() {
@@ -85,6 +124,7 @@ function updateVis() {
 
 
 	//update recipe data
+    var selectedRecipes = getItemBarSelected();
     console.log("Loading recipes: " + selectedRecipes);
     var sankeyData = recipesToSankey(selectedRecipes);
     iterations = 16 * sankeyData.nodes.length;
@@ -135,6 +175,7 @@ function logEvent(name, s) {
 	l.append("span").text(s);
 	//e.node().scrollTop = e.node().scrollHeight;
 }
+
 
 
 function recipesToSankey(recipeList) {
@@ -240,7 +281,20 @@ function recipeToSankeyRecurse(recipeId, amount, level){
 
         return ret;
     }
+}
 
 
+/**
+ * Shuffles array in place.
+ * @param {Array} a items An array containing the items.
+ */
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
 }
 
