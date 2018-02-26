@@ -16,7 +16,7 @@ var chartType = "Sankey"
 var startWithPrimatives = false;
 
 
-var selectedRecipes = ["rocket-silo", "centrifuge", "boiler"];
+var selectedRecipes = ["rocket-silo"];
 
 //recipe database
 var recipes;
@@ -40,6 +40,11 @@ function initVis(){
             var recipe = rawList[i];
             recipes[recipe.id] = recipe;
         }
+
+        selectedRecipes = Object.keys(recipes);
+        shuffle(selectedRecipes);
+        selectedRecipes = selectedRecipes.slice(0,4);
+
         console.log("Recipes Loaded");
         updateVis();
     });
@@ -49,7 +54,19 @@ function initVis(){
     d3.select("#reset").on("click", updateVis)
 }
 
-
+/**
+ * Shuffles array in place.
+ * @param {Array} a items An array containing the items.
+ */
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+}
 
 // Updates the visualization parameters and redraws the vis
 function updateVis() {
@@ -149,8 +166,20 @@ function recipesToSankey(recipeList) {
     var nodeListNames = [];
     for (var i = 0; i < nodeListIds.length; i++) {
         nodeIndicies[nodeListIds[i]] = i;
-        nodeListNames.push({"name": recipes[nodeListIds[i]].name});
+
+        //count total amounts
+        var totalAmount = 0;
+        for (var j = 0; j < recipeSankey.nodes.length ; j++){
+            if (recipeSankey.nodes[j].name == nodeListIds[i]){
+                totalAmount += recipeSankey.nodes[j].amount;
+            }
+        }
+
+        nodeListNames.push({"name": recipes[nodeListIds[i]].name + ": " + totalAmount});
+
     }
+
+    //add amounts for each node
 
 
     //assign set to sankey node list
@@ -182,7 +211,9 @@ function recipeToSankeyRecurse(recipeId, amount, level){
 
     var recipeItem = recipes[recipeId];
 
-    ret.nodes.push({"name" : recipeItem.id});
+    ret.nodes.push({"name" : recipeItem.id, "amount" : amount});
+
+    //recurse
     if (recipeItem.type == "Resource" || recipeItem.type == "Liquid"){
         ret.amount = amount;
         return ret;
