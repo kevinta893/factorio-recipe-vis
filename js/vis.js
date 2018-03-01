@@ -52,6 +52,8 @@ function initVis(){
         shuffle(selectedRecipes);
         selectedRecipes = selectedRecipes.slice(0,4);
 
+        initInventoryMenu();
+
         console.log("Recipes Loaded");
         updateVis();
     });
@@ -81,16 +83,91 @@ function initVis(){
             })
             .on("click", function(e){
                 console.log(e);
+                showInventory();
                 if (e.length <= 0){
-                    getItemBarSelected();
                     return;
                 }
             });
 
 
 
+}
+
+function initInventoryMenu(){
+
+    var logistics = [
+        ["wooden-chest", "iron-chest", "steel-chest"],
+        ["transport-belt"]
+    ];
+    var production = [
+        ["iron-axe"],
+        ["boiler"]
+    ];
+    var intermediateProducts = [
+        ["raw-wood"],
+        ["wood"]
+    ];
+    var combat = [
+        ["pistol"],
+        ["firearm-magazine"],
+        ["grenade", "cluster-grenade"]
+    ];
+
+    var categoryImagesPath = "images/category"
+    var inventoryCategories = [
+        {"name": "Logistics", "img": "logistics.png", "list": logistics},
+        {"name": "Production", "img": "production.png", "list": production},
+        {"name": "Intermediate Products", "img": "intermediate_products.png", "list": intermediateProducts},
+        {"name": "Combat", "img": "combat.png", "list": combat},
+    ];
+
+
+
+    var inventoryRoot = d3.select("#inventory");
+
+    //prepare categories
+    var categoryRoot = inventoryRoot.selectAll(".category")
+        .data(inventoryCategories)
+        .enter()
+        .append("div")
+        .attr("class", "category");
+
+    categoryRoot.append("img")
+            .attr("src", function(d){
+                return categoryImagesPath + "/" + d.img;
+            });
+
+    //for each category, prepare each row
+    var itemRows = categoryRoot.selectAll(".item-row").append("div")
+        .data(function(d){
+            return d.list;
+        })
+        .enter()
+        .append("div")
+        .attr("class", "item-row");
+
+    //for each row, prepare the item itself.
+    itemRows.selectAll(".item")
+        .data(function(d){
+            return d;
+        })
+        .enter()
+        .append("div")
+        .attr("class", "item")
+        .text(function(d){
+            return recipes[d].name;
+        })
 
 }
+
+function showInventory(){
+    $("#inventory-overlay").show();
+}
+
+function closeInventory(){
+    $("#inventory-overlay").hide();
+}
+
 
 function getItemBarSelected(){
     var selectedList = $(".item-slot").map(function(){return $(this).attr("value");}).get();
