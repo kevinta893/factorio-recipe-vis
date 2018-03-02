@@ -68,6 +68,7 @@ body {
 
 #inventory-overlay{
     position: absolute;
+    display: none;
     width: 100%;
     height: 100%;
     top: 0;
@@ -76,7 +77,6 @@ body {
     bottom: 0;
     background-color: rgba(0,0,0,0.5);
     z-index: 2;
-    cursor: pointer;
 }
 
 #inventory{
@@ -88,6 +88,7 @@ body {
     transform: translate(50%,50%);
     position: absolute;
     background-color: #CCCCCC;
+    z-index: 1000;
 }
 
 #inventory-background{
