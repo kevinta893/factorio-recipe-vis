@@ -96,8 +96,9 @@ function initVis(){
 function initInventoryMenu(){
 
     var logistics = [
-        ["wooden-chest", "iron-chest", "steel-chest"],
-        ["transport-belt"]
+        ["wooden-chest", "iron-chest", "steel-chest", "storage-tank"],
+        ["transport-belt", "fast-transport-belt", "express-transport-belt", "underground-belt", "fast-underground-belt", "express-underground-belt", "splitter", "fast-splitter", "express-splitter"],
+        ["burner-inserter", "inserter", "long-handed-inserter", "fast-inserter", "filter-inserter", "stack-inserter", "stack-filter-inserter"]
     ];
     var production = [
         ["iron-axe"],
@@ -113,7 +114,6 @@ function initInventoryMenu(){
         ["grenade", "cluster-grenade"]
     ];
 
-    var categoryImagesPath = "images/category"
     var inventoryCategories = [
         {"name": "Logistics", "img": "logistics.png", "list": logistics},
         {"name": "Production", "img": "production.png", "list": production},
@@ -121,6 +121,8 @@ function initInventoryMenu(){
         {"name": "Combat", "img": "combat.png", "list": combat},
     ];
 
+    var imagesPath = "./images"
+    var categoryImagesPath = "./images/category";
 
 
     var inventoryRoot = d3.select("#inventory");
@@ -154,9 +156,10 @@ function initInventoryMenu(){
         .enter()
         .append("div")
         .attr("class", "item")
-        .text(function(d){
-            return recipes[d].name;
-        })
+        .append("img")
+        .attr("src", function(d){
+            return imagesPath + "/" + recipes[d].id + ".png";
+        });
 
 }
 
