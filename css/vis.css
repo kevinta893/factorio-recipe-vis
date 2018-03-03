@@ -5,7 +5,7 @@ body {
 
 #chart {
     width: 960px;
-    height: 700px;
+    height: 75%;
     clear: both;
 }
 
@@ -47,8 +47,8 @@ body {
 .item-bar{
     margin: auto;
     margin-top: 1em;
-    width: 450px;
-    height: 110px;
+    width: 470px;
+    height: 115px;
     background: #CCCCCC;
     border-top: 1px solid #CCC;
     border-left: 1px solid #CCC;
@@ -59,12 +59,12 @@ body {
 .item-slot-container{
     margin-left: 12px;
     margin-top: 12px;
-
+    position: relative;
 }
 .item-bar svg{width: 100%; height: 100%}
 
 
-.item-slot{
+.item-slot, .item-slot-overlay{
     width: 40px;
     height: 40px;
     display: inline-block;
@@ -73,7 +73,23 @@ body {
     border-right: 1px solid #2A2A2A;
     border-bottom: 1px solid #2A2A2A;
     background-color: #7b7b7b;
+    margin: 1px;
+}
 
+.item-slot img, .item-slot-overlay img{
+    position: relative;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.item-slot:hover{
+    background-color: #ff7f00;
+}
+
+.item-slot-overlay.hover{ /* This hover is programmatic */
+    background-color: #ff7f00;
 }
 
 #inventory-overlay{

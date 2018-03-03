@@ -64,35 +64,45 @@ function initVis(){
     d3.select("#spread").on("click", updateVis);
     d3.select("#reset").on("click", updateVis)
 
-    //initalize the item bar
+    //initalize the item bar on vis
     d3.select("#item-bar-vis").append("div")
         .attr("class", "item-slot-container")
         .selectAll(".item-slot")
         .data(itemSlots)
         .enter()
             .append("div")
+            .attr("id", function(d, i){
+                return "item-slot-" + i;
+            })
             .attr("class", "item-slot")
-            .attr("x", function(d, i){
-                return (i % 10)* (SLOT_SIZE + SLOT_MARGINS) + SLOT_OFFSET_LEFT;
-            })
-            .attr("y", function(d, i){
-                return (Math.floor(i / 10) * (SLOT_SIZE + SLOT_MARGINS))+ SLOT_OFFSET_TOP;
-            })
             .attr("value", function(d){
                 return d;
             })
             .on("click", function(e){
-                console.log(e);
                 showInventory();
-                if (e.length <= 0){
-                    return;
-                }
-            });
+            })
+            .append("img")
+        .attr("src", "images/blank.png");
 
 
+    //setup inventory bar in the overlay. Clone from main page
+    var itemBarVis = $("#item-bar-vis");
+    var itemBar = itemBarVis.clone().appendTo("#inventory-overlay");
+    itemBar.attr("id", "item-bar-overlay");
+    itemBar.attr("class", "item-bar");
+    $("#item-bar-overlay .item-slot").attr("class", "item-slot-overlay");
 
     //setup cursor item clicking
+    var itemCursor = $("#item-cursor");
+    var itemSlotsOverlay = [];
+    $("#item-bar-overlay .item-slot-overlay").each(function (i, obj){
+        itemSlotsOverlay.push($(obj));
+    });
+
     $(document).on("mousemove", function(e){
+        var mouseX = e.pageX;
+        var mouseY = e.pageY;
+
         var width = $("#item-cursor").width();
         var height = $("#item-cursor").height();
 
@@ -103,29 +113,60 @@ function initVis(){
         var minY = 0;
 
         //clamp the position to within the page
-        var x = Math.min(maxX, e.pageX - (width/2));
-        var y = Math.min(maxY, e.pageY - (height/2));
+        var x = Math.min(maxX, mouseX - (width/2));
+        var y = Math.min(maxY, mouseY - (height/2));
         x = Math.max(minX, x);
         y = Math.max(minY, y);
-
 
         $("#item-cursor").css({
             left: x,
             top: y,
             cursor: "pointer"
-        })
+        });
+
+        //anytime an item overlaps an itemslot, do the hover event
+        if ($("#item-cursor").is(":visible")){
+            for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
+                var itemSlot = itemSlotsOverlay[i];
+                var overlap = pointOverlap(mouseX, mouseY, itemSlot);
+                if (overlap){
+                    itemSlot.addClass("hover");
+                }else{
+                    itemSlot.removeClass("hover");
+                }
+
+            }
+        }
+
     });
 
-    $("#item-cursor").on("click", function(){
-        $("#item-cursor").hide();
+    $("#item-cursor").on("click", function(e){
+        itemCursor.hide();
+        itemCursor.css({cursor: "auto"});
+
+        var mouseX = e.pageX;
+        var mouseY = e.pageY;
+
+        var slotOverlapped;
+        for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
+            var itemSlot = itemSlotsOverlay[i];
+            var overlap = pointOverlap(mouseX, mouseY, itemSlot);
+            if (overlap){
+                slotOverlapped = itemSlot;
+                break;
+            }
+        }
+
+        if (slotOverlapped != null){
+            //dropped on top of an item slot. we add to that item slot
+            itemSlot.find("img").attr("src", itemCursor.attr("src"));
+            itemSlot.find("img").show();
+            itemSlot.removeClass("hover");
+        }
     });
 
 
-    //setup inventory bar in the overlay. Clone from main page
-    var itemBarVis = $("#item-bar-vis");
-    var itemBar = itemBarVis.clone().appendTo("#inventory-overlay");
-    itemBar.attr("id", "item-bar-overlay");
-    itemBar.attr("class", "item-bar");
+
     //position and etc is set when the overlay is opened
 }
 
@@ -429,6 +470,18 @@ function recipeToSankeyRecurse(recipeId, amount, level){
 
         return ret;
     }
+}
+
+
+function pointOverlap(x, y, $div1) {
+    var x1 = $div1.offset().left;
+    var y1 = $div1.offset().top;
+    var h1 = $div1.outerHeight(true);
+    var w1 = $div1.outerWidth(true);
+
+
+    if (x < x1 || x > x1 + w1 || y < y1 || y > y1 + h1) return false;
+    return true;
 }
 
 
