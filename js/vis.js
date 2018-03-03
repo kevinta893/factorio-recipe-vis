@@ -96,9 +96,22 @@ function initVis(){
         var width = $("#item-cursor").width();
         var height = $("#item-cursor").height();
 
+        var maxX = $(document).width() - width;
+        var maxY = $(document).height() - height;
+
+        var minX = 0;
+        var minY = 0;
+
+        //clamp the position to within the page
+        var x = Math.min(maxX, e.pageX - (width/2));
+        var y = Math.min(maxY, e.pageY - (height/2));
+        x = Math.max(minX, x);
+        y = Math.max(minY, y);
+
+
         $("#item-cursor").css({
-            left: e.pageX - (width/2),
-            top: e.pageY - (height/2),
+            left: x,
+            top: y,
             cursor: "pointer"
         })
     });
