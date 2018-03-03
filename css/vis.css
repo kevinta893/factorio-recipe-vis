@@ -108,11 +108,29 @@ body {
     position: relative;
     display: inline-block;
 }
+
+.category-button:hover{
+    background-color: #ff7f00;
+}
+
+
 .item{
     position: relative;
     display: inline-block;
     width: 32px;
     height: 32px;
+    cursor: pointer;
+}
 
+.item:hover{
+    background-color: #ff7f00;
+}
+
+#item-cursor{
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    display: none;
+    z-index: 100000;
 }
 

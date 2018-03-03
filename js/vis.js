@@ -89,7 +89,20 @@ function initVis(){
                 }
             });
 
+    $(document).on("mousemove", function(e){
+        var width = $("#item-cursor").width();
+        var height = $("#item-cursor").height();
 
+        $("#item-cursor").css({
+            left: e.pageX - (width/2),
+            top: e.pageY - (height/2),
+            cursor: "pointer"
+        })
+    });
+
+    $("#item-cursor").on("click", function(){
+        $("#item-cursor").hide();
+    });
 
 }
 
@@ -174,6 +187,10 @@ function initInventoryMenu(){
         .append("img")
         .attr("src", function(d){
             return imagesPath + "/" + recipes[d].id + ".png";
+        })
+        .on("click", function (d) {
+            $("#item-cursor").attr("src", imagesPath + "/" + recipes[d].id + ".png");
+            $("#item-cursor").show();
         });
 
     //hide all but the first category
