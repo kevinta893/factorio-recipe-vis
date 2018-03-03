@@ -65,13 +65,13 @@ function initVis(){
     d3.select("#reset").on("click", updateVis)
 
     //initalize the item bar
-    d3.select("#item-bar").append("svg").selectAll(".item-slot")
+    d3.select("#item-bar-vis").append("div")
+        .attr("class", "item-slot-container")
+        .selectAll(".item-slot")
         .data(itemSlots)
         .enter()
-            .append("rect")
+            .append("div")
             .attr("class", "item-slot")
-            .attr("width", SLOT_SIZE)
-            .attr("height", SLOT_SIZE)
             .attr("x", function(d, i){
                 return (i % 10)* (SLOT_SIZE + SLOT_MARGINS) + SLOT_OFFSET_LEFT;
             })
@@ -89,6 +89,9 @@ function initVis(){
                 }
             });
 
+
+
+    //setup cursor item clicking
     $(document).on("mousemove", function(e){
         var width = $("#item-cursor").width();
         var height = $("#item-cursor").height();
@@ -104,6 +107,13 @@ function initVis(){
         $("#item-cursor").hide();
     });
 
+
+    //setup inventory bar in the overlay. Clone from main page
+    var itemBarVis = $("#item-bar-vis");
+    var itemBar = itemBarVis.clone().appendTo("#inventory-overlay");
+    itemBar.attr("id", "item-bar-overlay");
+    itemBar.attr("class", "item-bar");
+    //position and etc is set when the overlay is opened
 }
 
 function initInventoryMenu(){
@@ -200,6 +210,16 @@ function initInventoryMenu(){
 
 function showInventory(){
     $("#inventory-overlay").show();
+
+    var itemBarVis = $("#item-bar-vis");
+    //reset the item bar's position
+    $("#item-bar-overlay").css({
+        position : "absolute",
+        width: itemBarVis.width(),
+        height: itemBarVis.height(),
+        left: itemBarVis.offset().left,
+        top: itemBarVis.offset().top -16
+    });
 }
 
 function closeInventory(){
