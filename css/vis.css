@@ -104,6 +104,10 @@ body {
     cursor: pointer;
 }
 
+.category-button{
+    position: relative;
+    display: inline-block;
+}
 .item{
     position: relative;
     display: inline-block;

@@ -19,7 +19,7 @@ var startWithPrimatives = false;
 var itemSlots = ["advanced-circuit", "boiler", "", "", "",
     "", "", "", "", "",
     "", "", "", "", "",
-    "", "", "", "", "steam-engine", ];
+    "", "", "", "", "steam-engine" ];
 var SLOT_SIZE = 40;             //pixels
 var SLOT_MARGINS = 3;
 var SLOT_OFFSET_TOP = 10;
@@ -115,10 +115,10 @@ function initInventoryMenu(){
     ];
 
     var inventoryCategories = [
-        {"name": "Logistics", "img": "logistics.png", "list": logistics},
-        {"name": "Production", "img": "production.png", "list": production},
-        {"name": "Intermediate Products", "img": "intermediate_products.png", "list": intermediateProducts},
-        {"name": "Combat", "img": "combat.png", "list": combat},
+        {"name": "Logistics", "id" : "logistics", "img": "logistics.png", "list": logistics},
+        {"name": "Production","id" : "production",  "img": "production.png", "list": production},
+        {"name": "Intermediate Products", "id" : "intermediate-products",  "img": "intermediate_products.png", "list": intermediateProducts},
+        {"name": "Combat", "id" : "combat", "img": "combat.png", "list": combat},
     ];
 
     var imagesPath = "./images"
@@ -127,20 +127,35 @@ function initInventoryMenu(){
 
     var inventoryRoot = d3.select("#inventory");
 
-    //prepare categories
+    //prepare category buttons
     var categoryRoot = inventoryRoot.selectAll(".category")
         .data(inventoryCategories)
         .enter()
         .append("div")
-        .attr("class", "category");
+        .attr("class", "category-button");
 
+    //setup category heading
     categoryRoot.append("img")
-            .attr("src", function(d){
-                return categoryImagesPath + "/" + d.img;
-            });
+        .attr("src", function(d){
+            return categoryImagesPath + "/" + d.img;
+        })
+        .on("click", function(d){
+            $(".category-items").hide();
+            $("#cat-" + d.id).show();
+        });
 
     //for each category, prepare each row
-    var itemRows = categoryRoot.selectAll(".item-row").append("div")
+    var categoryItems = inventoryRoot.selectAll(".category-items")
+        .data(inventoryCategories)
+        .enter()
+        .append("div")
+        .attr("class", "category-items")
+        .attr("id", function (d) {
+            return "cat-" + d.id;
+        });
+
+
+    var itemRows = categoryItems.selectAll(".item-row").append("div")
         .data(function(d){
             return d.list;
         })
@@ -161,6 +176,9 @@ function initInventoryMenu(){
             return imagesPath + "/" + recipes[d].id + ".png";
         });
 
+    //hide all but the first category
+    $(".category-items").hide();
+    $("#cat-" + inventoryCategories[0].name.toLowerCase()).show();
 }
 
 function showInventory(){
