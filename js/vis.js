@@ -436,11 +436,11 @@ function updateVis() {
 
 
 function dragmove(d) {
-    var width = $("#chart svg").width();
-    var height = $("#chart svg").height();
 
+    var chartElem = $("#chart svg");
+    var width = chartElem.width();
+    var height = chartElem.height();
     var nodeWidth = parseFloat(d3.select(this).select("rect").attr("width"));
-    console.log(nodeWidth);
 
     //get mouse position inside chart
     var mousePos = d3.mouse(this);
@@ -453,16 +453,22 @@ function dragmove(d) {
     column = deadZone < -0.5 ? column - 1 : column;
     column = deadZone > 0.5 ? column + 1 : column;
 
+    //clamp the column position to the chart's width
+    var columnPos = column * nodeSnapWidth;
+    maxWidth = Math.floor(width/nodeSnapWidth)*nodeSnapWidth;
+    columnPos = Math.min(maxWidth, columnPos);
+    columnPos = Math.max(0, columnPos);
     d3.select(this).attr("transform",
         "translate(" + (
             //d.x
-            d.x = column * nodeSnapWidth
+            d.x = columnPos
         ) + "," + (
             d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
         ) + ")");
     chart.d3.sankey.relayout();
     d3.selectAll(".link").attr("d", chart.d3.sankey.link());
 }
+
 //Gets the page's UI control data
 function getControls(){
     reverseTree = d3.select("#reverse").node().checked;
