@@ -20,10 +20,11 @@ var itemSlots = ["advanced-circuit", "boiler", "", "", "",
     "", "", "", "", "",
     "", "", "", "", "",
     "", "", "", "", "steam-engine" ];
-var SLOT_SIZE = 40;             //pixels
-var SLOT_MARGINS = 3;
-var SLOT_OFFSET_TOP = 10;
-var SLOT_OFFSET_LEFT = 10;
+var itemSlotsVis = [];
+var itemSlotsOverlay = [];
+var itemCategoryIconLocation = "images/category/"
+var itemIconLocation = "images/";
+
 
 //recipe database
 var recipes;
@@ -51,6 +52,13 @@ function initVis(){
         shuffle(selectedRecipes);
         selectedRecipes = selectedRecipes.slice(0,4);
 
+        //setup item bar with the initial items
+        for (var i = 0 ; i < itemSlots.length ; i++){
+            if (itemSlots[i] != ""){
+                setItemBarItem(i, itemSlots[i]);
+            }
+        }
+
         initInventoryMenu();
 
         console.log("Recipes Loaded");
@@ -75,14 +83,14 @@ function initVis(){
             })
             .attr("index", function(d, i){return i})
             .attr("class", "item-slot")
-            .attr("value", function(d){
-                return d;
-            })
             .on("click", function(e){
                 showInventory();
             })
             .append("img")
             .attr("src", "images/blank.png");
+
+
+
 
 
     //setup inventory bar in the overlay. Clone from main page
@@ -94,12 +102,12 @@ function initVis(){
 
     //setup cursor item clicking
     var itemCursor = $("#item-cursor");
-    var itemSlotsVis = [];
+    itemSlotsVis = [];
     $("#item-bar-vis .item-slot").each(function (i, obj){
         itemSlotsVis.push($(obj));
     });
 
-    var itemSlotsOverlay = [];
+    itemSlotsOverlay = [];
     $("#item-bar-overlay .item-slot-overlay").each(function (i, obj){
         $(obj).attr("id", "item-slot-overlay-" + i);
         itemSlotsOverlay.push($(obj));
@@ -166,19 +174,39 @@ function initVis(){
 
         if (slotOverlapped != null){
             //dropped on top of an item slot. we add to that item slot
-            var cursorImgSrc = itemCursor.attr("src");
+            var cursorItemValue = itemCursor.attr("item-id");
             var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
 
-            itemSlot.find("img").attr("src", cursorImgSrc);
+            setItemBarItem(itemSlotIndex, cursorItemValue)
             itemSlot.removeClass("hover");
 
-            //update the vis item bar too.
-            itemSlotsVis[itemSlotIndex].find("img").attr("src", cursorImgSrc);
         }
     });
-
-    //position and etc is set when the overlay is opened
 }
+
+function setItemBarItem(index, itemId){
+    var recipe = recipes[itemId];
+    var imgSrc = itemIconLocation + recipe.id + ".png";
+
+    itemSlotsVis[index].find("img").attr("src", imgSrc);
+    itemSlotsOverlay[index].find("img").attr("src", imgSrc);
+
+    itemSlotsVis[index].attr("item-id", recipe.id);
+    itemSlotsOverlay[index].attr("item-id", recipe.id);
+
+    itemSlots[index] = itemId;
+}
+
+function removeItemBarItem(index){
+    itemSlotsVis[index].find("img").attr("src", "");
+    itemSlotsOverlay[index].find("img").attr("src", "");
+    itemSlotsVis[index].attr("item-id", "");
+    itemSlotsOverlay[index].attr("item-id", "");
+
+    itemSlots[index] = "";
+}
+
+
 
 function initInventoryMenu(){
 
@@ -270,6 +298,7 @@ function initInventoryMenu(){
             itemCursor.show();
         });
 
+
     //hide all but the first category
     $(".category-items").hide();
     $("#cat-" + inventoryCategories[0].name.toLowerCase()).show();
@@ -291,11 +320,12 @@ function showInventory(){
 
 function closeInventory(){
     $("#inventory-overlay").hide();
+    updateVis();
 }
 
 
-function getItemBarSelected(){
-    var selectedList = $(".item-slot").map(function(){return $(this).attr("value");}).get();
+function getItemBarItems(){
+    var selectedList = $(".item-slot").map(function(){return $(this).attr("item-id");}).get();
 
     var hasItemList = [];
     for (var i = 0 ; i < selectedList.length ; i++){
@@ -326,7 +356,7 @@ function updateVis() {
 
 
 	//update recipe data
-    var selectedRecipes = getItemBarSelected();
+    var selectedRecipes = getItemBarItems();
     console.log("Loading recipes: " + selectedRecipes);
     var sankeyData = recipesToSankey(selectedRecipes);
     iterations = 16 * sankeyData.nodes.length;
