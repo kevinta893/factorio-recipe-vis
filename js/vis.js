@@ -36,7 +36,7 @@ initVis();
 
 
 function initVis(){
-    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.json", function (json, err){
+    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
         if (err != "success"){
             console.log("Error cannot load json\n" + err);
             return;
