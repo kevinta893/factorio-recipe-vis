@@ -24,6 +24,8 @@ var itemSlotsVis = [];
 var itemSlotsOverlay = [];
 var itemCategoryIconLocation = "images/category/"
 var itemIconLocation = "images/";
+var itemBlankImage = "blank.png";
+var itemCursor;
 
 
 //recipe database
@@ -83,25 +85,33 @@ function initVis(){
             })
             .attr("index", function(d, i){return i})
             .attr("class", "item-slot")
-            .on("click", function(e){
-                showInventory();
-            })
             .append("img")
-            .attr("src", "images/blank.png");
+            .attr("src", itemIconLocation + itemBlankImage);
 
 
+    $(".item-slot").on("click", function(e){
+        showInventory();
+        var itemSlot = $(this);
+        var itemSlotIndex = parseInt(itemSlot.attr("index"));
+        var slotItemId = itemSlot.attr("item-id");
 
+        if (slotItemId != null){
+            //there's an item in the slot
+            removeItemBarItem(itemSlotIndex);
+            attachItemToCursor(slotItemId);
+        }
+    });
 
 
     //setup inventory bar in the overlay. Clone from main page
     var itemBarVis = $("#item-bar-vis");
-    var itemBar = itemBarVis.clone().appendTo("#inventory-overlay");
+    var itemBar = itemBarVis.clone(true).appendTo("#inventory-overlay");
     itemBar.attr("id", "item-bar-overlay");
     itemBar.attr("class", "item-bar");
     $("#item-bar-overlay .item-slot").attr("class", "item-slot-overlay");
 
     //setup cursor item clicking
-    var itemCursor = $("#item-cursor");
+    itemCursor = $("#item-cursor");
     itemSlotsVis = [];
     $("#item-bar-vis .item-slot").each(function (i, obj){
         itemSlotsVis.push($(obj));
@@ -154,7 +164,7 @@ function initVis(){
 
     });
 
-    //Event: when item is dropped onto the overlay item bar
+    //Event: detect when item is dropped onto the overlay item bar
     itemCursor.on("click", function(e){
         itemCursor.hide();
         itemCursor.css({cursor: "auto"});
@@ -184,6 +194,13 @@ function initVis(){
     });
 }
 
+function attachItemToCursor(itemId){
+    var recipe = recipes[itemId];
+    itemCursor.attr("src", itemIconLocation + "/" + recipe.id + ".png");
+    itemCursor.attr("item-id", recipe.id)
+    itemCursor.show();
+}
+
 function setItemBarItem(index, itemId){
     var recipe = recipes[itemId];
     var imgSrc = itemIconLocation + recipe.id + ".png";
@@ -198,8 +215,8 @@ function setItemBarItem(index, itemId){
 }
 
 function removeItemBarItem(index){
-    itemSlotsVis[index].find("img").attr("src", "");
-    itemSlotsOverlay[index].find("img").attr("src", "");
+    itemSlotsVis[index].find("img").attr("src", itemIconLocation + itemBlankImage);
+    itemSlotsOverlay[index].find("img").attr("src", itemIconLocation + itemBlankImage);
     itemSlotsVis[index].attr("item-id", "");
     itemSlotsOverlay[index].attr("item-id", "");
 
@@ -291,11 +308,7 @@ function initInventoryMenu(){
             return imagesPath + "/" + recipes[d].id + ".png";
         })
         .on("click", function (d) {
-            var itemCursor = $("#item-cursor");
-            var recipe = recipes[d];
-            itemCursor.attr("src", imagesPath + "/" + recipe.id + ".png");
-            itemCursor.attr("item-id", recipe.id)
-            itemCursor.show();
+            attachItemToCursor(d);
         });
 
 
