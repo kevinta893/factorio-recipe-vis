@@ -166,10 +166,6 @@ function initVis(){
 
     //Event: detect when item is dropped onto the overlay item bar
     itemCursor.on("click", function(e){
-        itemCursor.hide();
-        itemCursor.css({cursor: "auto"});
-        var itemId = itemCursor.attr("item-id")
-
         var mouseX = e.pageX;
         var mouseY = e.pageY;
 
@@ -189,7 +185,10 @@ function initVis(){
 
             setItemBarItem(itemSlotIndex, cursorItemValue)
             itemSlot.removeClass("hover");
-
+            clearItemCursor();
+        } else{
+            //not hovering over a slot just clear the cursor instead
+            clearItemCursor();
         }
     });
 }
@@ -199,6 +198,14 @@ function attachItemToCursor(itemId){
     itemCursor.attr("src", itemIconLocation + "/" + recipe.id + ".png");
     itemCursor.attr("item-id", recipe.id)
     itemCursor.show();
+}
+
+function clearItemCursor(){
+    itemCursor.hide();
+    itemCursor.attr("src", "");
+    itemCursor.attr("item-id", "")
+    itemCursor.css({cursor: "auto"});
+
 }
 
 function setItemBarItem(index, itemId){
