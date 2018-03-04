@@ -13,7 +13,7 @@ var nodePadding = 20;
 var iterations = 32;
 var spread = true;
 var chartType = "Sankey"
-var startWithPrimatives = false;
+var reverseTree = false;
 
 //item bar initial config
 var itemSlots = ["electronic-circuit", "boiler", "assembling-machine-1", "", "",
@@ -433,7 +433,7 @@ function dragmove(d) {
 }
 //Gets the page's UI control data
 function getControls(){
-    startWithPrimatives = d3.select("#reverse").node().checked;
+    reverseTree = d3.select("#reverse").node().checked;
     spread = d3.select("#spread").node().checked;
 }
 
@@ -503,7 +503,7 @@ function recipesToSankey(recipeList) {
         recipeSankey.links[i].target = nodeIndicies[recipeSankey.links[i].target];
 
         //swap target and source order
-        if (startWithPrimatives == true) {
+        if (reverseTree == true) {
             var temp = recipeSankey.links[i].source
             recipeSankey.links[i].source = recipeSankey.links[i].target;
             recipeSankey.links[i].target = temp;
