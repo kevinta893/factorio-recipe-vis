@@ -16,10 +16,10 @@ var chartType = "Sankey"
 var startWithPrimatives = false;
 
 //item bar initial config
-var itemSlots = ["advanced-circuit", "boiler", "", "", "",
+var itemSlots = ["electronic-circuit", "boiler", "assembling-machine-1", "", "",
     "", "", "", "", "",
     "", "", "", "", "",
-    "", "", "", "", "steam-engine" ];
+    "", "", "", "", "" ];
 var itemSlotsVis = [];
 var itemSlotsOverlay = [];
 var itemCategoryIconLocation = "images/category/"
