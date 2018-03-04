@@ -458,13 +458,18 @@ function dragmove(d) {
     maxWidth = Math.floor(width/nodeSnapWidth)*nodeSnapWidth;
     columnPos = Math.min(maxWidth, columnPos);
     columnPos = Math.max(0, columnPos);
-    d3.select(this).attr("transform",
-        "translate(" + (
+    d3.select(this)
+        .transition()
+        .ease("expOut")
+        .duration(0)
+        .attr("transform", "translate(" + (
             //d.x
             d.x = columnPos
         ) + "," + (
             d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
         ) + ")");
+
+
     chart.d3.sankey.relayout();
     d3.selectAll(".link").attr("d", chart.d3.sankey.link());
 }
