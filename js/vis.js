@@ -254,16 +254,20 @@ function initInventoryMenu(){
 
     ];
     var intermediateProducts = [
-        ["raw-wood","coal","stone","iron-ore","copper-ore","uranium-ore","raw-fish","crude-oil","heavy-oil","light-oil","lubricant","petroleum-gas","sulfuric-acid","water","steam"],
+        ["raw-wood","coal","stone","iron-ore","copper-ore","uranium-ore","raw-fish"],
+        ["crude-oil","heavy-oil","light-oil","lubricant","petroleum-gas","sulfuric-acid","water","steam"],
         ["wood","iron-plate","copper-plate","solid-fuel","steel-plate","plastic-bar","sulfur","battery","explosives","uranium-processing"],
-        ["copper-cable","iron-stick","iron-gear-wheel","empty-barrel","electronic-circuit","advanced-circuit","processing-unit","engine-unit","electric-engine-unit","flying-robot-frame","satellite","rocket-part","rocket-control-unit","low-density-structure","rocket-fuel","nuclear-fuel","uranium-235","uranium-238","uranium-fuel-cell","used-up-uranium-fuel-cell","nuclear-fuel-reprocessing","kovarex-enrichment-process"],
+        ["copper-cable","iron-stick","iron-gear-wheel","empty-barrel","electronic-circuit","advanced-circuit","processing-unit","engine-unit","electric-engine-unit","flying-robot-frame"],
+        ["satellite","rocket-part","rocket-control-unit","low-density-structure","rocket-fuel"],
+        ["nuclear-fuel","uranium-235","uranium-238","uranium-fuel-cell","used-up-uranium-fuel-cell","nuclear-fuel-reprocessing","kovarex-enrichment-process"],
         ["science-pack-1","science-pack-2","science-pack-3","military-science-pack","production-science-pack","high-tech-science-pack","space-science-pack"]
     ];
     var combat = [
         ["pistol","submachine-gun","shotgun","combat-shotgun","rocket-launcher","flamethrower","land-mine"],
         ["firearm-magazine","piercing-rounds-magazine","uranium-rounds-magazine","shotgun-shells","piercing-shotgun-shells","cannon-shell","explosive-cannon-shell","uranium-cannon-shell","explosive-uranium-cannon-shell","artillery-shell","rocket","explosive-rocket","atomic-bomb","flamethrower-ammo"],
         ["grenade","cluster-grenade","poison-capsule","slowdown-capsule","defender-capsule","distractor-capsule","destroyer-capsule","discharge-defense-remote","artillery-targeting-remote"],
-        ["light-armor","heavy-armor","modular-armor","power-armor","power-armor-mk2","portable-solar-panel","portable-fusion-reactor","energy-shield","energy-shield-mk2","battery-mk1","battery-mk2","personal-laser-defense","discharge-defense","exoskeleton","personal-roboport","personal-roboport-mk2","nightvision"],
+        ["light-armor","heavy-armor","modular-armor","power-armor","power-armor-mk2"],
+        ["portable-solar-panel","portable-fusion-reactor","energy-shield","energy-shield-mk2","battery-mk1","battery-mk2","personal-laser-defense","discharge-defense","exoskeleton","personal-roboport","personal-roboport-mk2","nightvision"],
         ["stone-wall","gate","gun-turret","laser-turret","flamethrower-turret","artillery-turret","radar","rocket-silo"]
     ];
 
