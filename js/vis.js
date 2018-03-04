@@ -27,6 +27,9 @@ var itemIconLocation = "images/";
 var itemBlankImage = "blank.png";
 var itemCursor;
 
+//visualization runtime vars
+var nodeSnapWidth = -1;
+
 
 //recipe database
 var recipes;
@@ -408,6 +411,20 @@ function updateVis() {
         .spread(spread);
     chart.draw(sankeyData);
 
+    var minX = 1000000;
+    $(".node").each(function(i, obj){
+        var transform = $(obj).attr("transform");
+        var prefix = "translate(";
+        transform = transform.slice(transform.indexOf(prefix)+prefix.length, transform.length);
+        transform = transform.substr(0, transform.indexOf(','));
+
+        var nodeX = parseFloat(transform);
+        if (nodeX < minX && nodeX > 0){
+            minX = nodeX;
+        }
+    });
+    nodeSnapWidth = minX;
+
     //add events for each node
     var nodes = d3.selectAll(".node")
         .call(d3.behavior.drag()
@@ -421,10 +438,25 @@ function updateVis() {
 function dragmove(d) {
     var width = $("#chart svg").width();
     var height = $("#chart svg").height();
+
+    var nodeWidth = parseFloat(d3.select(this).select("rect").attr("width"));
+    console.log(nodeWidth);
+
+    //get mouse position inside chart
+    var mousePos = d3.mouse(this);
+    var mouseX = mousePos[0];
+    var mouseY = mousePos[1];
+
+    //allow deadzone while dragging left or right
+    var deadZone = ((((nodeSnapWidth/2) -(mouseX % nodeSnapWidth) + (nodeWidth/2)) / nodeSnapWidth)- 0.5) * -1;
+    var column = Math.floor(d.x / nodeSnapWidth);
+    column = deadZone < -0.5 ? column - 1 : column;
+    column = deadZone > 0.5 ? column + 1 : column;
+
     d3.select(this).attr("transform",
         "translate(" + (
-            d.x
-            //d.x = Math.max(0, Math.min(width - d.dx, d3.event.x))
+            //d.x
+            d.x = column * nodeSnapWidth
         ) + "," + (
             d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
         ) + ")");
@@ -462,6 +494,7 @@ function recipesToSankey(recipeList) {
         recipeSankey.nodes = recipeSankey.nodes.concat(currentRecipeSankey.nodes);
         recipeSankey.links = recipeSankey.links.concat(currentRecipeSankey.links);
     }
+
 
 
     //build a set of the nodes
@@ -509,6 +542,21 @@ function recipesToSankey(recipeList) {
             recipeSankey.links[i].target = temp;
         }
     }
+
+    /*
+    //inject arbitrary number of columns
+    var extraColumns = 7;
+    var firstIndex = recipeSankey.nodes.length;
+    for (var i =0 ; i < extraColumns ; i++){
+        recipeSankey.nodes.push({"name": ""})
+    }
+
+    //inject arbitrary number of columns
+    for (var i =0 ; i < extraColumns-1 ; i++){
+        recipeSankey.links.push({"source": firstIndex + i , "target": firstIndex + (i + 1), "value": 1});
+    }
+    */
+
 
 	return recipeSankey;
 }
