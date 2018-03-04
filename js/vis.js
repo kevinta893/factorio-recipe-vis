@@ -235,22 +235,36 @@ function removeItemBarItem(index){
 function initInventoryMenu(){
 
     var logistics = [
-        ["wooden-chest", "iron-chest", "steel-chest", "storage-tank"],
-        ["transport-belt", "fast-transport-belt", "express-transport-belt", "underground-belt", "fast-underground-belt", "express-underground-belt", "splitter", "fast-splitter", "express-splitter"],
-        ["burner-inserter", "inserter", "long-handed-inserter", "fast-inserter", "filter-inserter", "stack-inserter", "stack-filter-inserter"]
+        ["wooden-chest","iron-chest","steel-chest","storage-tank"],
+        ["transport-belt","fast-transport-belt","express-transport-belt","underground-belt","fast-underground-belt","express-underground-belt","splitter","fast-splitter","express-splitter"],
+        ["burner-inserter","inserter","long-handed-inserter","fast-inserter","filter-inserter","stack-inserter","stack-filter-inserter"],
+        ["small-electric-pole","medium-electric-pole","big-electric-pole","substation","pipe","pipe-to-ground","pump"],
+        ["rail","train-stop","rail-signal","rail-chain-signal","locomotive","cargo-wagon","fluid-wagon","artillery-wagon","car","tank"],
+        ["logistic-robot","construction-robot","active-provider-chest","passive-provider-chest","storage-chest","buffer-chest","requester-chest","roboport"],
+        ["lamp","red-wire","green-wire","arithmetic-combinator","decider-combinator","constant-combinator","power-switch","programmable-speaker"],
+        ["stone-brick","concrete","hazard-concrete","refined-concrete","refined-hazard-concrete","landfill","cliff-explosives"]
     ];
     var production = [
-        ["iron-axe"],
-        ["boiler"]
+        ["iron-axe","steel-axe","repair-pack","blueprint","deconstruction-planner","blueprint-book"],
+        ["boiler","steam-engine","steam-turbine","solar-panel","accumulator","nuclear-reactor","heat-exchanger","heat-pipe"],
+        ["burner-mining-drill","electric-mining-drill","offshore-pump","pumpjack"],
+        ["stone-furnace","steel-furnace","electric-furnace"],
+        ["assembling-machine-1","assembling-machine-2","assembling-machine-3","oil-refinery","chemical-plant","centrifuge","lab"],
+        ["beacon","speed-module","speed-module-2","speed-module-3","efficiency-module","efficiency-module-2","efficiency-module-3","productivity-module","productivity-module-2","productivity-module-3"],
+
     ];
     var intermediateProducts = [
-        ["raw-wood"],
-        ["wood"]
+        ["raw-wood","coal","stone","iron-ore","copper-ore","uranium-ore","raw-fish","crude-oil","heavy-oil","light-oil","lubricant","petroleum-gas","sulfuric-acid","water","steam"],
+        ["wood","iron-plate","copper-plate","solid-fuel","steel-plate","plastic-bar","sulfur","battery","explosives","uranium-processing"],
+        ["copper-cable","iron-stick","iron-gear-wheel","empty-barrel","electronic-circuit","advanced-circuit","processing-unit","engine-unit","electric-engine-unit","flying-robot-frame","satellite","rocket-part","rocket-control-unit","low-density-structure","rocket-fuel","nuclear-fuel","uranium-235","uranium-238","uranium-fuel-cell","used-up-uranium-fuel-cell","nuclear-fuel-reprocessing","kovarex-enrichment-process"],
+        ["science-pack-1","science-pack-2","science-pack-3","military-science-pack","production-science-pack","high-tech-science-pack","space-science-pack"]
     ];
     var combat = [
-        ["pistol"],
-        ["firearm-magazine"],
-        ["grenade", "cluster-grenade"]
+        ["pistol","submachine-gun","shotgun","combat-shotgun","rocket-launcher","flamethrower","land-mine"],
+        ["firearm-magazine","piercing-rounds-magazine","uranium-rounds-magazine","shotgun-shells","piercing-shotgun-shells","cannon-shell","explosive-cannon-shell","uranium-cannon-shell","explosive-uranium-cannon-shell","artillery-shell","rocket","explosive-rocket","atomic-bomb","flamethrower-ammo"],
+        ["grenade","cluster-grenade","poison-capsule","slowdown-capsule","defender-capsule","distractor-capsule","destroyer-capsule","discharge-defense-remote","artillery-targeting-remote"],
+        ["light-armor","heavy-armor","modular-armor","power-armor","power-armor-mk2","portable-solar-panel","portable-fusion-reactor","energy-shield","energy-shield-mk2","battery-mk1","battery-mk2","personal-laser-defense","discharge-defense","exoskeleton","personal-roboport","personal-roboport-mk2","nightvision"],
+        ["stone-wall","gate","gun-turret","laser-turret","flamethrower-turret","artillery-turret","radar","rocket-silo"]
     ];
 
     var inventoryCategories = [
