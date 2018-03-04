@@ -87,8 +87,14 @@ body {
 .item-slot:hover{
     background-color: #ff7f00;
 }
-
+.item-slot, .item-slot-overlay{
+    cursor: pointer;
+}
 .item-slot-overlay.hover{ /* This hover is programmatic */
+    background-color: #ff7f00;
+}
+
+.item-slot-overlay:hover{
     background-color: #ff7f00;
 }
 

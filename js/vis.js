@@ -33,7 +33,6 @@ initVis();
 
 
 function initVis(){
-
     $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.json", function (json, err){
         if (err != "success"){
             console.log("Error cannot load json\n" + err);
@@ -74,6 +73,7 @@ function initVis(){
             .attr("id", function(d, i){
                 return "item-slot-" + i;
             })
+            .attr("index", function(d, i){return i})
             .attr("class", "item-slot")
             .attr("value", function(d){
                 return d;
@@ -82,7 +82,7 @@ function initVis(){
                 showInventory();
             })
             .append("img")
-        .attr("src", "images/blank.png");
+            .attr("src", "images/blank.png");
 
 
     //setup inventory bar in the overlay. Clone from main page
@@ -94,8 +94,14 @@ function initVis(){
 
     //setup cursor item clicking
     var itemCursor = $("#item-cursor");
+    var itemSlotsVis = [];
+    $("#item-bar-vis .item-slot").each(function (i, obj){
+        itemSlotsVis.push($(obj));
+    });
+
     var itemSlotsOverlay = [];
     $("#item-bar-overlay .item-slot-overlay").each(function (i, obj){
+        $(obj).attr("id", "item-slot-overlay-" + i);
         itemSlotsOverlay.push($(obj));
     });
 
@@ -103,8 +109,8 @@ function initVis(){
         var mouseX = e.pageX;
         var mouseY = e.pageY;
 
-        var width = $("#item-cursor").width();
-        var height = $("#item-cursor").height();
+        var width = itemCursor.width();
+        var height = itemCursor.height();
 
         var maxX = $(document).width() - width;
         var maxY = $(document).height() - height;
@@ -118,14 +124,14 @@ function initVis(){
         x = Math.max(minX, x);
         y = Math.max(minY, y);
 
-        $("#item-cursor").css({
+        itemCursor.css({
             left: x,
             top: y,
             cursor: "pointer"
         });
 
         //anytime an item overlaps an itemslot, do the hover event
-        if ($("#item-cursor").is(":visible")){
+        if (itemCursor.is(":visible")){
             for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
                 var itemSlot = itemSlotsOverlay[i];
                 var overlap = pointOverlap(mouseX, mouseY, itemSlot);
@@ -140,9 +146,11 @@ function initVis(){
 
     });
 
-    $("#item-cursor").on("click", function(e){
+    //Event: when item is dropped onto the overlay item bar
+    itemCursor.on("click", function(e){
         itemCursor.hide();
         itemCursor.css({cursor: "auto"});
+        var itemId = itemCursor.attr("item-id")
 
         var mouseX = e.pageX;
         var mouseY = e.pageY;
@@ -150,8 +158,7 @@ function initVis(){
         var slotOverlapped;
         for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
             var itemSlot = itemSlotsOverlay[i];
-            var overlap = pointOverlap(mouseX, mouseY, itemSlot);
-            if (overlap){
+            if (pointOverlap(mouseX, mouseY, itemSlot)){
                 slotOverlapped = itemSlot;
                 break;
             }
@@ -159,13 +166,16 @@ function initVis(){
 
         if (slotOverlapped != null){
             //dropped on top of an item slot. we add to that item slot
-            itemSlot.find("img").attr("src", itemCursor.attr("src"));
-            itemSlot.find("img").show();
+            var cursorImgSrc = itemCursor.attr("src");
+            var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
+
+            itemSlot.find("img").attr("src", cursorImgSrc);
             itemSlot.removeClass("hover");
+
+            //update the vis item bar too.
+            itemSlotsVis[itemSlotIndex].find("img").attr("src", cursorImgSrc);
         }
     });
-
-
 
     //position and etc is set when the overlay is opened
 }
@@ -253,8 +263,11 @@ function initInventoryMenu(){
             return imagesPath + "/" + recipes[d].id + ".png";
         })
         .on("click", function (d) {
-            $("#item-cursor").attr("src", imagesPath + "/" + recipes[d].id + ".png");
-            $("#item-cursor").show();
+            var itemCursor = $("#item-cursor");
+            var recipe = recipes[d];
+            itemCursor.attr("src", imagesPath + "/" + recipe.id + ".png");
+            itemCursor.attr("item-id", recipe.id)
+            itemCursor.show();
         });
 
     //hide all but the first category
