@@ -406,6 +406,21 @@ function updateVis() {
 	//update recipe data
     var selectedRecipes = getItemBarItems();
     console.log("Loading recipes: " + selectedRecipes);
+	
+	if (selectedRecipes.length <= 0){
+		//no recipes selected, notify on the chart
+		var chartElem = $("#chart svg");
+		var width = chartElem.width();
+		var height = chartElem.height();
+		d3.select("#chart").select("svg").append("text")
+			.text("Add some recipes to the item bar")
+			.attr("x", 0)
+			.attr("y", height/2)
+			.attr("font-size", 20);
+		return;
+	}
+	
+	//we have some recipes, so compute the vis nodes and links
     var sankeyData = recipesToSankey(selectedRecipes);
     iterations = 16 * sankeyData.nodes.length;
 
@@ -418,6 +433,7 @@ function updateVis() {
         .spread(spread);
     chart.draw(sankeyData);
 
+	//find the distance between all columns
     var minX = 1000000;
     $(".node").each(function(i, obj){
         var transform = $(obj).attr("transform");
