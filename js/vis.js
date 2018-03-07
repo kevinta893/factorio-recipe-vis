@@ -14,6 +14,13 @@ var iterations = 32;
 var spread = true;
 var chartType = "Sankey"
 var reverseTree = false;
+var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g. iron-plate -> iron-ore)
+	"iron-plate",
+	"iron-gear-wheel",
+	"copper-plate",
+	"steel-plate"
+];
+
 
 //item bar initial config
 var itemSlots = ["electronic-circuit", "boiler", "assembling-machine-1", "", "",
@@ -469,8 +476,8 @@ function dragmove(d) {
             d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
         ) + ")");
 
-
     chart.d3.sankey.relayout();
+
     d3.selectAll(".link").attr("d", chart.d3.sankey.link());
 }
 
@@ -584,7 +591,7 @@ function recipeToSankeyRecurse(recipeId, amount, level){
     ret.nodes.push({"name" : recipeItem.id, "amount" : amount});
 
     //recurse
-    if (recipeItem.type == "Resource" || recipeItem.type == "Liquid"){
+    if (recipeItem.type == "Resource" || recipeItem.type == "Liquid" || stopItems.indexOf(recipeItem.id) >=0 ){
         ret.amount = amount;
         return ret;
     }
