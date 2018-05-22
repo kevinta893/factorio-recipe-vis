@@ -478,19 +478,12 @@ function updateVis() {
             return d.amount;
         })
         .attr("x", function(d) {
-            var imageDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
-            var textDimensions = d3.select(this).node().getBBox();
-            var rectWidth = imageDimensions.width;
-            var imageWidth = textDimensions.width;
-            console.log(textDimensions);
-            return (rectWidth /2) + (imageWidth);
+            var imageDimensions = d3.select(this.parentNode).select("image").node().getBBox();
+            return imageDimensions.x + imageDimensions.width;
         })
         .attr("y", function(d){
-            var rectDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
-            var textDimensions = d3.select(this).node().getBBox();
-            var rectHeight = rectDimensions.height;
-            var imageHeight = textDimensions.height;
-            return (rectHeight /2) + (imageHeight);
+            var imageDimensions = d3.select(this.parentNode).select("image").node().getBBox();
+            return imageDimensions.y + imageDimensions.height;
         });
 
 	//find the distance between all columns
