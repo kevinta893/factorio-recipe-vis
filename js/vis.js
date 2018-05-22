@@ -433,6 +433,66 @@ function updateVis() {
         .spread(spread);
     chart.draw(sankeyData);
 
+
+    //chart has now been drawn, modify by adding "bells and whistles"
+
+    //add icons with numbers and tooltips
+
+    //remove default node text
+    d3.selectAll(".node text")
+        .attr("visibility", "hidden");
+
+    //add icons for each
+    var nodeGroup = d3.selectAll(".node");
+    nodeGroup.append("image")
+        .attr("href", function(d){
+            return d.image;
+        })
+        .attr("width", function(d){
+            var rectDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
+            return rectDimensions.width-8;
+        })
+        .attr("height", function(d){
+            var rectDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
+            return rectDimensions.width-8;
+        })
+        .attr("x", function(d) {
+            var rectDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
+            var iconDimensions = d3.select(this).node().getBBox();
+            var rectWidth = rectDimensions.width;
+            var imageWidth = iconDimensions.width;
+            return (rectWidth /2) - (imageWidth /2);
+        })
+        .attr("y", function(d){
+            var rectDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
+            var iconDimensions = d3.select(this).node().getBBox();
+            var rectHeight = rectDimensions.height;
+            var imageHeight = iconDimensions.height;
+            return (rectHeight /2) - (imageHeight /2);
+        });
+
+    //add text for each icon
+    nodeGroup.append("text")
+        .attr("class", "item-icon-text")
+        .text(function(d){
+            return d.amount;
+        })
+        .attr("x", function(d) {
+            var imageDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
+            var textDimensions = d3.select(this).node().getBBox();
+            var rectWidth = imageDimensions.width;
+            var imageWidth = textDimensions.width;
+            console.log(textDimensions);
+            return (rectWidth /2) + (imageWidth);
+        })
+        .attr("y", function(d){
+            var rectDimensions = d3.select(this.parentNode).select("rect").node().getBBox();
+            var textDimensions = d3.select(this).node().getBBox();
+            var rectHeight = rectDimensions.height;
+            var imageHeight = textDimensions.height;
+            return (rectHeight /2) + (imageHeight);
+        });
+
 	//find the distance between all columns
     var minX = 1000000;
     $(".node").each(function(i, obj){
@@ -553,11 +613,9 @@ function recipesToSankey(recipeList) {
             }
         }
 
-        nodeListNames.push({"name": recipes[nodeListIds[i]].name + ": " + totalAmount});
+        nodeListNames.push({"name": recipes[nodeListIds[i]].name + ": " + totalAmount, "image": "images/" + recipes[nodeListIds[i]].id + ".png", amount: totalAmount});
 
     }
-
-    //add amounts for each node
 
 
     //assign set to sankey node list
