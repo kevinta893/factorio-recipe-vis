@@ -86,7 +86,7 @@ function initVis(){
     d3.select("#show-ores").on("click", updateVis);
 
     //initalize the item bar on vis
-    d3.select("#item-bar-vis").append("div")
+    itemSlotsElement =d3.select("#item-bar-vis").append("div")
         .attr("class", "item-slot-container")
         .selectAll(".item-slot")
         .data(itemSlots)
@@ -96,10 +96,25 @@ function initVis(){
                 return "item-slot-" + i;
             })
             .attr("index", function(d, i){return i})
-            .attr("class", "item-slot")
-            .append("img")
-            .attr("src", itemIconLocation + itemBlankImage);
+            .attr("class", "item-slot");
 
+    //add image
+    itemSlotsElement.append("img")
+        .attr("src", itemIconLocation + itemBlankImage);
+
+    //add item text
+    var slotContainer = d3.select(".item-slot-container").node().getBoundingClientRect();
+    itemSlotsElement.append("div")
+        .attr("class", "item-icon-text item-bar-icon-text")
+        .text("1")
+        .attr("style", function (d){
+            var slotDimensions = d3.select(this.parentNode).node().getBoundingClientRect();
+            var textDimensions = d3.select(this).node().getBoundingClientRect();
+            var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
+            var y = slotDimensions.y - slotContainer.y + slotDimensions.height -  textDimensions.height -2;
+            return "left: " + x + "; " +
+                "top: " + y + "; ";
+        });
 
     $(".item-slot").on("click", function(e){
         showInventory();
@@ -135,6 +150,7 @@ function initVis(){
         itemSlotsOverlay.push($(obj));
     });
 
+    //item cursor mouse move event
     $(document).on("mousemove", function(e){
         var mouseX = e.pageX;
         var mouseY = e.pageY;
@@ -149,8 +165,8 @@ function initVis(){
         var minY = 0;
 
         //clamp the position to within the page
-        var x = Math.min(maxX, mouseX - (width/2));
-        var y = Math.min(maxY, mouseY - (height/2));
+        var x = Math.min(maxX, mouseX);
+        var y = Math.min(maxY, mouseY);
         x = Math.max(minX, x);
         y = Math.max(minY, y);
 
@@ -205,9 +221,11 @@ function initVis(){
     });
 }
 
+
 function attachItemToCursor(itemId){
     var recipe = recipes[itemId];
-    itemCursor.attr("src", itemIconLocation + "/" + recipe.id + ".png");
+    $("#item-cursor-icon").attr("src", itemIconLocation + "/" + recipe.id + ".png");
+    $("#item-cursor-amount").text(1);
     itemCursor.attr("item-id", recipe.id)
     itemCursor.show();
 }
@@ -224,11 +242,18 @@ function setItemBarItem(index, itemId){
     var recipe = recipes[itemId];
     var imgSrc = itemIconLocation + recipe.id + ".png";
 
+    //set icon image
     itemSlotsVis[index].find("img").attr("src", imgSrc);
     itemSlotsOverlay[index].find("img").attr("src", imgSrc);
 
+    //set id
     itemSlotsVis[index].attr("item-id", recipe.id);
     itemSlotsOverlay[index].attr("item-id", recipe.id);
+
+    //set amount
+    itemSlotsVis[index].find("div").text("1");
+    itemSlotsOverlay[index].find("div");
+
 
     itemSlots[index] = itemId;
 }
@@ -705,6 +730,12 @@ function recipeToSankeyRecurse(recipeId, amount, level){
  * @param number
  */
 function factorioNumbering(number){
+
+    //infinite when number is -1
+    if (number < 0){
+        return '\u221E'
+    }
+
     //normal
     if(number < 1000){
         return number;

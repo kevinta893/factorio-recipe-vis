@@ -2,10 +2,11 @@ body {
     width: 960px;
     margin: auto;
 }
+h1{font-family: sans-serif;}
 
 #chart {
     width: 960px;
-    height: 75%;
+    height: 70%;
     clear: both;
 	background-color: #F1F1F1
 }
@@ -153,6 +154,8 @@ body {
 
 .item-icon-text{
     fill: #FFFFFF;
+    color: #FFFFFF;
+
     font-size: larger;
     font-weight: bold;
     font-family: sans-serif;
@@ -163,6 +166,16 @@ body {
             0px -1px 1px #000,
             1px 0px 1px #000,
             -1px 0px 1px #000;
+}
+
+.cursor-icon-text{
+    position: absolute;
+    bottom: -3px;
+    right: 2px;
+}
+
+.item-bar-icon-text{
+    position: absolute;
 }
 
 .item:hover{
