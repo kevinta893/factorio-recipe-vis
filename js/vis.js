@@ -475,7 +475,7 @@ function updateVis() {
     nodeGroup.append("text")
         .attr("class", "item-icon-text")
         .text(function(d){
-            return d.amount;
+            return factorioNumbering(d.amount);
         })
         .attr("x", function(d) {
             var imageDimensions = d3.select(this.parentNode).select("image").node().getBBox();
@@ -483,15 +483,13 @@ function updateVis() {
         })
         .attr("y", function(d){
             var imageDimensions = d3.select(this.parentNode).select("image").node().getBBox();
-            var textDimensions = d3.select(this).node().getBBox();
-
             return imageDimensions.y + imageDimensions.height -2;
         });
 
     //add tooltip for each node
     nodeGroup.append("title")
         .text(function(d){
-            return d.name;
+            return d.name + ": " + d.amount;
         });
 
 	//find the distance between all columns
@@ -694,6 +692,38 @@ function recipeToSankeyRecurse(recipeId, amount, level){
     }
 }
 
+
+/**
+ * Converts a number into a shorter form using
+ * k for thousand
+ * m for million
+ * b for billion
+ * etc
+ * @param number
+ */
+function factorioNumbering(number){
+    //normal
+    if(number < 1000){
+        return number;
+    }
+
+    //thousand
+    if(number < 1000000){
+        return Number.parseFloat(number/1000).toFixed(0) + "k";
+    }
+
+    //million
+    if (number < 1000000000){
+        return Number.parseFloat(number/1000000).toFixed(0) + "m";
+    }
+
+    //million
+    if (number < 1000000000000){
+        return Number.parseFloat(number/1000000000).toFixed(0) + "b";
+    }
+
+    return number;
+}
 
 function pointOverlap(x, y, $div1) {
     var x1 = $div1.offset().left;
