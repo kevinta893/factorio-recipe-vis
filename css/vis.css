@@ -21,8 +21,8 @@ body {
     stroke-opacity: .2;
 }
 
-.control               { float: left; padding-left: 2em; }
-.control label         { display: block; }
+.control               { float: left; padding-left: 2em; margin-bottom: 1em;}
+.control label         { display: block; text-align: center;}
 .control input         { width: 2.5em; }
 .control button        { border: outset 2px; }
 .control button:active { border: inset 2px; }
