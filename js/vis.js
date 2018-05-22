@@ -483,7 +483,9 @@ function updateVis() {
         })
         .attr("y", function(d){
             var imageDimensions = d3.select(this.parentNode).select("image").node().getBBox();
-            return imageDimensions.y + imageDimensions.height;
+            var textDimensions = d3.select(this).node().getBBox();
+
+            return imageDimensions.y + imageDimensions.height -2;
         });
 
     //add tooltip for each node
