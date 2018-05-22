@@ -486,6 +486,12 @@ function updateVis() {
             return imageDimensions.y + imageDimensions.height;
         });
 
+    //add tooltip for each node
+    nodeGroup.append("title")
+        .text(function(d){
+            return d.name;
+        });
+
 	//find the distance between all columns
     var minX = 1000000;
     $(".node").each(function(i, obj){
@@ -606,7 +612,7 @@ function recipesToSankey(recipeList) {
             }
         }
 
-        nodeListNames.push({"name": recipes[nodeListIds[i]].name + ": " + totalAmount, "image": "images/" + recipes[nodeListIds[i]].id + ".png", amount: totalAmount});
+        nodeListNames.push({"name": recipes[nodeListIds[i]].name, "image": "images/" + recipes[nodeListIds[i]].id + ".png", amount: totalAmount});
 
     }
 
