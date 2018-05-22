@@ -14,6 +14,7 @@ var iterations = 32;
 var spread = true;
 var chartType = "Sankey"
 var reverseTree = false;
+var showOres = false;
 var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g. iron-plate -> iron-ore)
 	"iron-plate",
 	"iron-gear-wheel",
@@ -82,6 +83,7 @@ function initVis(){
     d3.select("#reverse").on("click", updateVis);
     d3.select("#spread").on("click", updateVis);
     d3.select("#reset").on("click", updateVis)
+    d3.select("#show-ores").on("click", updateVis);
 
     //initalize the item bar on vis
     d3.select("#item-bar-vis").append("div")
@@ -558,8 +560,9 @@ function dragmove(d) {
 
 //Gets the page's UI control data
 function getControls(){
-    reverseTree = d3.select("#reverse").node().checked;
-    spread = d3.select("#spread").node().checked;
+    reverseTree = $("#reverse").is(":checked");
+    spread = $("#spread").is(":checked");
+    showOres = $("#show-ores").is(":checked");
 }
 
 //logs chart error events
@@ -664,7 +667,7 @@ function recipeToSankeyRecurse(recipeId, amount, level){
     ret.nodes.push({"name" : recipeItem.id, "amount" : amount});
 
     //recurse
-    if (recipeItem.type == "Resource" || recipeItem.type == "Liquid" || stopItems.indexOf(recipeItem.id) >=0 ){
+    if (recipeItem.type == "Resource" || recipeItem.type == "Liquid" || (showOres == false && stopItems.indexOf(recipeItem.id) >=0) || (showOres == true && recipeItem.type == "Resource")){
         ret.amount = amount;
         return ret;
     }
