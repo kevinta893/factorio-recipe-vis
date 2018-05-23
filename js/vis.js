@@ -175,7 +175,7 @@ function initVis(){
             top: y,
             cursor: "pointer"
         });
-console.log(y);
+
         //anytime an item overlaps an itemslot, do the hover event
         if (itemCursor.is(":visible")){
             for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
