@@ -176,6 +176,7 @@ h1{font-family: sans-serif;}
 
 .item-bar-icon-text{
     position: absolute;
+    text-align: end;
 }
 
 .item:hover{

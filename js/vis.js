@@ -106,7 +106,7 @@ function initVis(){
     var slotContainer = d3.select(".item-slot-container").node().getBoundingClientRect();
     itemSlotsElement.append("div")
         .attr("class", "item-icon-text item-bar-icon-text")
-        .text("1")
+        .text("")
         .attr("style", function (d){
             var slotDimensions = d3.select(this.parentNode).node().getBoundingClientRect();
             var textDimensions = d3.select(this).node().getBoundingClientRect();
@@ -250,19 +250,46 @@ function setItemBarItem(index, itemId){
     itemSlotsVis[index].attr("item-id", recipe.id);
     itemSlotsOverlay[index].attr("item-id", recipe.id);
 
-    //set amount
+    //set amount, recalcuate textbox positioning
     itemSlotsVis[index].find("div").text("1");
-    itemSlotsOverlay[index].find("div");
+    itemSlotsOverlay[index].find("div").text("1");
+
+    var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
+    var slotDimensions = itemSlotsVis[index][0].getBoundingClientRect();
+    console.log($(".item-slot-container"));
+    console.log(slotDimensions);
+    var textDimensions = itemSlotsVis[index].find("div")[0].getBoundingClientRect();
+    var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
+    var y = slotDimensions.y - slotContainer.y + slotDimensions.height - textDimensions.height- 2;
+
+    itemSlotsVis[index].find("div")
+        .css({
+            left: x,
+            top: y
+        })
+    itemSlotsOverlay[index].find("div")
+        .css({
+            left: x,
+            top: y
+        });
 
 
     itemSlots[index] = itemId;
 }
 
 function removeItemBarItem(index){
+
+    //remove image
     itemSlotsVis[index].find("img").attr("src", itemIconLocation + itemBlankImage);
     itemSlotsOverlay[index].find("img").attr("src", itemIconLocation + itemBlankImage);
+
+    //remove id
     itemSlotsVis[index].attr("item-id", "");
     itemSlotsOverlay[index].attr("item-id", "");
+
+    //remove amount
+    itemSlotsVis[index].find("div").text("");
+    itemSlotsOverlay[index].find("div").text("");
 
     itemSlots[index] = "";
 }
