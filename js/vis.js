@@ -244,7 +244,7 @@ function clearItemCursor(){
     itemCursor.attr("src", "");
     itemCursor.attr("item-id", "")
     itemCursor.css({cursor: "auto"});
-
+    $(".item").removeClass("hover");
 }
 
 function setItemBarItem(index, itemId){
