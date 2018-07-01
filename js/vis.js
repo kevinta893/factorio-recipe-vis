@@ -158,8 +158,8 @@ function initVis(){
         var width = itemCursor.width();
         var height = itemCursor.height();
 
-        var maxX = $(document).width() - width;
-        var maxY = $(document).height() - height -3;        //note that the height grows to fit, hence constant
+        var maxX = $(document).width() - width + (width/2);
+        var maxY = $(document).height() - height + (height/2) -3;        //note that the height grows to fit, hence constant
 
         var minX = 0;
         var minY = 0;
@@ -171,9 +171,9 @@ function initVis(){
         y = Math.max(minY, y);
 
         itemCursor.css({
-            left: x,
-            top: y,
-            cursor: "pointer"
+            left: x-(width/2),
+            top: y-(height/2),
+            cursor: "none"
         });
 
         //anytime an item overlaps an itemslot, do the hover event
