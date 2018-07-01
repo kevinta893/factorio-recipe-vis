@@ -188,6 +188,15 @@ function initVis(){
                 }
 
             }
+
+            //also check if the item hovers itself on the item list
+            var itemOriginal = $("#inventory-"+itemCursor.attr("item-id"));
+            var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
+            if (overlap){
+                itemOriginal.addClass("hover");
+            }else{
+                itemOriginal.removeClass("hover");
+            }
         }
 
     });
@@ -392,13 +401,16 @@ function initInventoryMenu(){
         .enter()
         .append("div")
         .attr("class", "item")
-        .append("img")
-        .attr("src", function(d){
-            return imagesPath + "/" + recipes[d].id + ".png";
+        .attr("id", function(d){
+            return "inventory-"+ d;
         })
-        .on("click", function (d) {
-            attachItemToCursor(d);
-        });
+            .append("img")
+            .attr("src", function(d){
+                return imagesPath + "/" + recipes[d].id + ".png";
+            })
+            .on("click", function (d) {
+                attachItemToCursor(d);
+            });
 
 
     //hide all but the first category
