@@ -109,7 +109,7 @@ h1{font-family: sans-serif;}
     z-index: 2;
 }
 
-#inventory{
+#inventory-window{
     width: 960px;
     height: 500px;
     margin: auto;
@@ -119,6 +119,17 @@ h1{font-family: sans-serif;}
     position: absolute;
     background-color: #CCCCCC;
     z-index: 1000;
+}
+
+#inventory{
+    padding-left: 2em;
+    padding-top: 2em;
+}
+
+.category-items{
+    width: 28em;
+    padding-top: 2em;
+
 }
 
 #inventory-background{
@@ -137,6 +148,12 @@ h1{font-family: sans-serif;}
 .category-button{
     position: relative;
     display: inline-block;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
 }
 
 .category-button:hover{
@@ -150,6 +167,12 @@ h1{font-family: sans-serif;}
     width: 32px;
     height: 32px;
     cursor: pointer;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
 }
 
 .item-icon-text{
