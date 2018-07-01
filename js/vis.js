@@ -265,8 +265,6 @@ function setItemBarItem(index, itemId){
 
     var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
     var slotDimensions = itemSlotsVis[index][0].getBoundingClientRect();
-    console.log($(".item-slot-container"));
-    console.log(slotDimensions);
     var textDimensions = itemSlotsVis[index].find("div")[0].getBoundingClientRect();
     var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
     var y = slotDimensions.y - slotContainer.y + slotDimensions.height - textDimensions.height- 2;
