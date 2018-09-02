@@ -24,16 +24,19 @@ var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g
 
 
 //item bar initial config
-var itemSlots = ["electronic-circuit", "boiler", "assembling-machine-1", "", "",
-    "", "", "", "", "",
-    "", "", "", "", "",
-    "", "", "", "", "" ];
+var itemSlots = [{id: "electronic-circuit", amount: 1},{id: "electronic-circuit", amount: 1}, {id: "electronic-circuit", amount: 1}, {id: "", amount: 0},{id: "", amount: 0},
+    {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},
+    {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},
+    {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0}];
 var itemSlotsVis = [];
 var itemSlotsOverlay = [];
-var itemCategoryIconLocation = "images/category/"
+var itemCategoryIconLocation = "images/category/";
 var itemIconLocation = "images/";
 var itemBlankImage = "blank.png";
 var itemCursor;
+
+//keyboard hold downs
+var isKeyDown = {};
 
 //visualization runtime vars
 var nodeSnapWidth = -1;
@@ -67,8 +70,8 @@ function initVis(){
 
         //setup item bar with the initial items
         for (var i = 0 ; i < itemSlots.length ; i++){
-            if (itemSlots[i] != ""){
-                setItemBarItem(i, itemSlots[i]);
+            if (itemSlots[i].id != ""){
+                setItemBarItem(i, itemSlots[i].id, 1);
             }
         }
 
@@ -79,11 +82,16 @@ function initVis(){
     });
 
 
+    //setup key events
+    document.onkeydown = keyDown_Event;
+    document.onkeyup = keyUp_Event;
+
     //setup click events
     d3.select("#reverse").on("click", updateVis);
     d3.select("#spread").on("click", updateVis);
     d3.select("#reset").on("click", updateVis)
     d3.select("#show-ores").on("click", updateVis);
+
 
     //initalize the item bar on vis
     itemSlotsElement =d3.select("#item-bar-vis").append("div")
@@ -122,10 +130,11 @@ function initVis(){
         var itemSlotIndex = parseInt(itemSlot.attr("index"));
         var slotItemId = itemSlot.attr("item-id");
 
-        if (slotItemId != null){
+        if (slotItemId != null && slotItemId.length > 0){
             //there's an item in the slot
+            var itemAmount = itemSlots[itemSlotIndex].amount;
             removeItemBarItem(itemSlotIndex);
-            attachItemToCursor(slotItemId);
+            attachItemToCursor(slotItemId, itemAmount);
         }
     });
 
@@ -149,6 +158,10 @@ function initVis(){
         $(obj).attr("id", "item-slot-overlay-" + i);
         itemSlotsOverlay.push($(obj));
     });
+
+    //inventory close event
+    $("#inventory-background").on("click", closeInventory);
+
 
     //item cursor mouse move event
     $(document).on("mousemove", function(e){
@@ -178,6 +191,7 @@ function initVis(){
 
         //anytime an item overlaps an itemslot, do the hover event
         if (itemCursor.is(":visible")){
+            //check if the cursor overlaps an item slot
             for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
                 var itemSlot = itemSlotsOverlay[i];
                 var overlap = pointOverlap(mouseX, mouseY, itemSlot);
@@ -206,6 +220,7 @@ function initVis(){
         var mouseX = e.pageX;
         var mouseY = e.pageY;
 
+        //find the overlapping slot in the item bar
         var slotOverlapped;
         for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
             var itemSlot = itemSlotsOverlay[i];
@@ -215,39 +230,68 @@ function initVis(){
             }
         }
 
+        //if there is a slot being hovered over, then attach item to the item slot
         if (slotOverlapped != null){
             //dropped on top of an item slot. we add to that item slot
             var cursorItemValue = itemCursor.attr("item-id");
+            var cursorAmount = parseInt(itemCursor.attr("amount"));
             var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
 
-            setItemBarItem(itemSlotIndex, cursorItemValue)
+            setItemBarItem(itemSlotIndex, cursorItemValue, cursorAmount);
             itemSlot.removeClass("hover");
-            clearItemCursor();
-        } else{
-            //not hovering over a slot just clear the cursor instead
-            clearItemCursor();
+            clearItemCursor()
+            return;
         }
+
+
+        //case 2, hovering over top its own item slot
+        var itemOriginal = $("#inventory-"+itemCursor.attr("item-id"));
+        var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
+        if (overlap){
+            itemOriginal.addClass("hover");
+
+            return;
+        }
+
+
+        //case 3, clicking anywhere else clears the cursor
+        clearItemCursor();
+        return;
+
     });
+    //reset the item cursor
+    clearItemCursor();
 }
 
 
-function attachItemToCursor(itemId){
+
+function attachItemToCursor(itemId, amount){
+
+    //currently held item is not the same, then change and reset amount
+    if (itemCursor.attr("item-id") != itemId){
+        clearItemCursor();
+    }
+
+
     var recipe = recipes[itemId];
     $("#item-cursor-icon").attr("src", itemIconLocation + "/" + recipe.id + ".png");
-    $("#item-cursor-amount").text(1);
-    itemCursor.attr("item-id", recipe.id)
+    $("#item-cursor-amount").text(amount);
+    itemCursor.attr("item-id", recipe.id);
+    itemCursor.attr("amount", amount);
     itemCursor.show();
 }
 
 function clearItemCursor(){
     itemCursor.hide();
-    itemCursor.attr("src", "");
-    itemCursor.attr("item-id", "")
+    $("#item-cursor-icon").attr("src", "");
+    $("#item-cursor-amount").text(0);
+    itemCursor.attr("item-id", "");
+    itemCursor.attr("amount", 0);
     itemCursor.css({cursor: "auto"});
     $(".item").removeClass("hover");
 }
 
-function setItemBarItem(index, itemId){
+function setItemBarItem(index, itemId, amount){
     var recipe = recipes[itemId];
     var imgSrc = itemIconLocation + recipe.id + ".png";
 
@@ -260,8 +304,8 @@ function setItemBarItem(index, itemId){
     itemSlotsOverlay[index].attr("item-id", recipe.id);
 
     //set amount, recalcuate textbox positioning
-    itemSlotsVis[index].find("div").text("1");
-    itemSlotsOverlay[index].find("div").text("1");
+    itemSlotsVis[index].find("div").text(amount);
+    itemSlotsOverlay[index].find("div").text(amount);
 
     var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
     var slotDimensions = itemSlotsVis[index][0].getBoundingClientRect();
@@ -281,7 +325,7 @@ function setItemBarItem(index, itemId){
         });
 
 
-    itemSlots[index] = itemId;
+    itemSlots[index] = {id: itemId, amount: amount};
 }
 
 function removeItemBarItem(index){
@@ -298,7 +342,7 @@ function removeItemBarItem(index){
     itemSlotsVis[index].find("div").text("");
     itemSlotsOverlay[index].find("div").text("");
 
-    itemSlots[index] = "";
+    itemSlots[index] = {id: "", amount: 0};
 }
 
 
@@ -407,7 +451,23 @@ function initInventoryMenu(){
                 return imagesPath + "/" + recipes[d].id + ".png";
             })
             .on("click", function (d) {
-                attachItemToCursor(d);
+                var itemId = d;
+                //if we are already holding an item, add one
+                if (itemCursor.attr("item-id") == itemId){
+                    //if either the shift keys are down, instead add 5 units
+                    if (isKeyDown.Shift){
+                        console.log("dhhsdkjf");
+                    }
+                } else if (itemCursor.attr("item-id") == "") {
+                    //nothing, attach to cursor
+                    if(isKeyDown.Shift){
+                        //shift is held, add 5 at a time
+                        attachItemToCursor(itemId, 5);
+                    } else {
+                        //regular click made, add one
+                        attachItemToCursor(itemId, 1);
+                    }
+                }
             });
 
 
@@ -437,16 +497,14 @@ function closeInventory(){
 
 
 function getItemBarItems(){
-    var selectedList = $(".item-slot").map(function(){return $(this).attr("item-id");}).get();
-
-    var hasItemList = [];
-    for (var i = 0 ; i < selectedList.length ; i++){
-        if(selectedList[i].length > 0){
-            hasItemList.push(selectedList[i]);
+    var itemList = [];
+    for (var i = 0 ; i < itemSlots.length ; i++){
+        if(itemSlots[i].id.length > 0){
+            itemList.push(itemSlots[i]);
         }
     }
 
-    return hasItemList;
+    return itemList;
 }
 
 
@@ -469,7 +527,8 @@ function updateVis() {
 
 	//update recipe data
     var selectedRecipes = getItemBarItems();
-    console.log("Loading recipes: " + selectedRecipes);
+    console.log("Loading recipes: ");
+    console.log(selectedRecipes);
 	
 	if (selectedRecipes.length <= 0){
 		//no recipes selected, notify on the chart
@@ -654,7 +713,7 @@ function recipesToSankey(recipeList) {
     //get links and nodes for the supplied recipe list
     for (var i = 0; i < recipeList.length; i++) {
 
-        currentRecipeSankey = recipeToSankeyRecurse(recipeList[i], 1, 0);
+        currentRecipeSankey = recipeToSankeyRecurse(recipeList[i].id, recipeList[i].amount, 0);
         recipeSankey.nodes = recipeSankey.nodes.concat(currentRecipeSankey.nodes);
         recipeSankey.links = recipeSankey.links.concat(currentRecipeSankey.links);
     }
@@ -828,3 +887,11 @@ function shuffle(a) {
     }
 }
 
+
+function keyDown_Event(e){
+    isKeyDown[e.key] = true;
+}
+
+function keyUp_Event(e){
+    isKeyDown[e.key] = false;
+}
