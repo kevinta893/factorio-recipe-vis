@@ -248,7 +248,15 @@ function initVis(){
         var itemOriginal = $("#inventory-"+itemCursor.attr("item-id"));
         var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
         if (overlap){
+            //clicked on own item slot, so increment the current amount
             itemOriginal.addClass("hover");
+
+            //if shift, add 5
+            if (isKeyDown.Shift){
+                incrementItemCursor(5);
+            }else{
+                incrementItemCursor(1);
+            }
 
             return;
         }
@@ -279,6 +287,18 @@ function attachItemToCursor(itemId, amount){
     itemCursor.attr("item-id", recipe.id);
     itemCursor.attr("amount", amount);
     itemCursor.show();
+}
+
+function incrementItemCursor(amount){
+    if (itemCursor.attr("item-id") == ""){
+        //cursor is currently cleared, do nothing
+        return;
+    }
+
+    var newAmount = parseInt(itemCursor.attr("amount")) + amount;
+    itemCursor.attr("amount", newAmount);
+    $("#item-cursor-amount").text(newAmount);
+
 }
 
 function clearItemCursor(){
