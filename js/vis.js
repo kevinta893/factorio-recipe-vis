@@ -476,10 +476,16 @@ function updateVis() {
 		var chartElem = $("#chart svg");
 		var width = chartElem.width();
 		var height = chartElem.height();
-		d3.select("#chart").select("svg").append("text")
-			.text("Add some recipes to the item bar")
-			.attr("x", 0)
-			.attr("y", height/2)
+
+
+		var informationText = d3.select("#chart").select("svg").append("text")
+			.text("Add some recipes to the item bar");
+
+        var textWidth = informationText.node().getComputedTextLength();
+        var textHeight = informationText.node().getBBox().height;
+		informationText
+			.attr("x", (width/2) - (textWidth/2))
+			.attr("y", (height/2) - (textHeight/2))
 			.attr("font-size", 20);
 		return;
 	}
@@ -788,7 +794,7 @@ function factorioNumbering(number){
         return Number.parseFloat(number/1000000).toFixed(0) + "m";
     }
 
-    //million
+    //billion
     if (number < 1000000000000){
         return Number.parseFloat(number/1000000000).toFixed(0) + "b";
     }
