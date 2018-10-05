@@ -241,10 +241,17 @@ function initVis(){
             var cursorAmount = parseInt(itemCursor.attr("amount"));
             var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
 
-            setItemBarItem(itemSlotIndex, cursorItemValue, cursorAmount);
-            itemSlot.removeClass("hover");
-            clearItemCursor()
-            return;
+            if (itemSlots[itemSlotIndex].id != ""){
+                //cursor has item, item bar has item, swap their contents
+                swapItemBarWithCursor(itemSlotIndex);
+                return;
+            }else{
+                //empty slot otherwise
+                setItemBarItem(itemSlotIndex, cursorItemValue, cursorAmount);
+                itemSlot.removeClass("hover");
+                clearItemCursor()
+                return;
+            }
         }
 
 
@@ -360,6 +367,19 @@ function setItemBarItem(index, itemId, amount){
             top: y
         });
 
+}
+
+function swapItemBarWithCursor(itemBarIndex){
+    var itemInSlot = itemSlots[itemBarIndex];
+    var itemInCursor = {
+        id:     itemCursor.attr("item-id"),
+        amount: itemCursor.attr("amount")
+    };
+
+    clearItemCursor();
+    attachItemToCursor( itemInSlot.id, itemInSlot.amount);
+    removeItemBarItem(itemBarIndex);
+    setItemBarItem(itemBarIndex, itemInCursor.id, itemInCursor.amount);
 }
 
 function removeItemBarItem(index){
