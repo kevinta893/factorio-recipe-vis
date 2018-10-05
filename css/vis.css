@@ -122,6 +122,7 @@ h1{font-family: sans-serif;}
 }
 
 #inventory{
+    float: left;
     padding-left: 2em;
     padding-top: 2em;
 }
@@ -226,4 +227,38 @@ h1{font-family: sans-serif;}
     -o-user-select: none;
     user-select: none;
 
+}
+
+
+
+#item-info {
+    position: relative;
+    float: left;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+#info-item-img{
+    position: relative;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
+}
+
+#info-item-img > img{
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+}
+
+#info-item-name{
+    float: right;
+    font-size: 2.2em;
+    margin-left: 0.5em;
 }
