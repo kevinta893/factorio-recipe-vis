@@ -24,10 +24,11 @@ var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g
 
 
 //item bar initial config
-var itemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel", amount: 1}, {id: "assembling-machine-1", amount: 1}, {id: "", amount: 0},{id: "", amount: 0},
+var initItemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel", amount: 1}, {id: "assembling-machine-1", amount: 1}, {id: "", amount: 0},{id: "", amount: 0},
     {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},
     {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},
     {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0}];
+var itemSlots = [];
 var itemSlotsVis = [];
 var itemSlotsOverlay = [];
 var itemCategoryIconLocation = "images/category/";
@@ -50,6 +51,11 @@ initVis();
 
 
 function initVis(){
+    //setup item slots with blanks
+    for (var i = 0 ; i < initItemSlots.length ; i++) {
+        itemSlots[i] = {id: "", amount: 0};
+    }
+
     $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
         if (err != "success"){
             console.log("Error cannot load json\n" + err);
@@ -69,9 +75,9 @@ function initVis(){
         selectedRecipes = selectedRecipes.slice(0,4);
 
         //setup item bar with the initial items
-        for (var i = 0 ; i < itemSlots.length ; i++){
-            if (itemSlots[i].id != ""){
-                setItemBarItem(i, itemSlots[i].id, 1);
+        for (var i = 0 ; i < initItemSlots.length ; i++){
+            if (initItemSlots[i].id != ""){
+                setItemBarItem(i, initItemSlots[i].id, 1);
             }
         }
 
@@ -312,8 +318,20 @@ function clearItemCursor(){
 }
 
 function setItemBarItem(index, itemId, amount){
+
+    //update the item bar variable
     var recipe = recipes[itemId];
     var imgSrc = itemIconLocation + recipe.id + ".png";
+
+    if (itemSlots[index].id === itemId){
+        //item already exists in the slot, just add to current amount
+        itemSlots[index] = {id: itemId, amount: amount + itemSlots[index].amount };
+    } else{
+        itemSlots[index] = {id: itemId, amount: amount};
+    }
+
+    //update the view
+    var itemInBar = itemSlots[index];
 
     //set icon image
     itemSlotsVis[index].find("img").attr("src", imgSrc);
@@ -324,8 +342,8 @@ function setItemBarItem(index, itemId, amount){
     itemSlotsOverlay[index].attr("item-id", recipe.id);
 
     //set amount, recalcuate textbox positioning
-    itemSlotsVis[index].find("div").text(amount);
-    itemSlotsOverlay[index].find("div").text(amount);
+    itemSlotsVis[index].find("div").text(itemInBar.amount);
+    itemSlotsOverlay[index].find("div").text(itemInBar.amount);
 
     var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
     var slotDimensions = itemSlotsVis[index][0].getBoundingClientRect();
@@ -344,8 +362,6 @@ function setItemBarItem(index, itemId, amount){
             top: y
         });
 
-
-    itemSlots[index] = {id: itemId, amount: amount};
 }
 
 function removeItemBarItem(index){
