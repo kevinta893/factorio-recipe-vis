@@ -29,8 +29,8 @@ var initItemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel
 var itemSlots = [];
 var itemSlotsVis = [];
 var itemSlotsOverlay = [];
-var itemCategoryIconLocation = "images/category/";
-var itemIconLocation = "images/";
+var itemCategoryIconLocation = "./images/category/";
+var itemIconLocation = "./images/";
 var itemBlankImage = "blank.png";
 var itemCursor;
 
@@ -161,6 +161,16 @@ function initVis(){
     $("#item-bar-overlay .item-slot-overlay").each(function (i, obj){
         $(obj).attr("id", "item-slot-overlay-" + i);
         itemSlotsOverlay.push($(obj));
+        $(obj).on("mouseover", function(e){
+            var itemId = $(obj).attr("item-id");
+            if (itemId != "" && itemId != undefined) {
+                setItemInfo(itemId);
+            }
+        });
+
+        $(obj).on("mouseleave", function(e){
+            clearItemInfo();
+        });
     });
 
     //inventory close event
@@ -447,8 +457,7 @@ function initInventoryMenu(){
         {"name": "Combat", "id" : "combat", "img": "combat.png", "list": combat},
     ];
 
-    var imagesPath = "./images"
-    var categoryImagesPath = "./images/category";
+
 
 
     var inventoryRoot = d3.select("#inventory");
@@ -463,7 +472,7 @@ function initInventoryMenu(){
     //setup category heading
     categoryRoot.append("img")
         .attr("src", function(d){
-            return categoryImagesPath + "/" + d.img;
+            return itemCategoryIconLocation + "/" + d.img;
         })
         .on("click", function(d){
             $(".category-items").hide();
@@ -502,7 +511,7 @@ function initInventoryMenu(){
         })
             .append("img")
             .attr("src", function(d){
-                return imagesPath + "/" + recipes[d].id + ".png";
+                return itemIconLocation + "/" + recipes[d].id + ".png";
             })
             .on("click", function (d) {
                 var itemId = d;
@@ -510,7 +519,7 @@ function initInventoryMenu(){
                 if (itemCursor.attr("item-id") == itemId){
                     //if either the shift keys are down, instead add 5 units
                     if (isKeyDown.Shift){
-                        console.log("dhhsdkjf");
+                        console.log("??? Not supposed to be here");
                     }
                 } else if (itemCursor.attr("item-id") == "") {
                     //nothing, attach to cursor
@@ -522,12 +531,33 @@ function initInventoryMenu(){
                         attachItemToCursor(itemId, 1);
                     }
                 }
-            });
+            })
+        .on("mouseover", function(d){
+            //hover, activate info panel
+            setItemInfo(d);
+        })
+        .on("mouseleave", function(d){
+            clearItemInfo();
+        });
 
 
     //hide all but the first category
     $(".category-items").hide();
     $("#cat-" + inventoryCategories[0].name.toLowerCase()).show();
+}
+
+function setItemInfo(itemId){
+    var recipe = recipes[itemId];
+
+    $("#info-item-name").text(recipe.name);
+    $("#info-item-img").attr("src", itemIconLocation + "/" + recipe.id + ".png");
+    $("#info-item-wiki").attr("href", recipe.wiki_link);
+}
+
+function clearItemInfo(){
+    $("#info-item-name").text("Select an item");
+    $("#info-item-img").attr("src", itemIconLocation + "/" + "null" + ".png");
+    $("#info-item-wiki").removeAttr("href");
 }
 
 function showInventory(){
