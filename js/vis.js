@@ -237,17 +237,17 @@ function initVis(){
         //if there is a slot being hovered over, then attach item to the item slot
         if (slotOverlapped != null){
             //dropped on top of an item slot. we add to that item slot
-            var cursorItemValue = itemCursor.attr("item-id");
+            var cursorItemId = itemCursor.attr("item-id");
             var cursorAmount = parseInt(itemCursor.attr("amount"));
             var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
 
-            if (itemSlots[itemSlotIndex].id != ""){
+            if (itemSlots[itemSlotIndex].id != "" && itemSlots[itemSlotIndex].id != cursorItemId){
                 //cursor has item, item bar has item, swap their contents
                 swapItemBarWithCursor(itemSlotIndex);
                 return;
             }else{
                 //empty slot otherwise
-                setItemBarItem(itemSlotIndex, cursorItemValue, cursorAmount);
+                setItemBarItem(itemSlotIndex, cursorItemId, cursorAmount);
                 itemSlot.removeClass("hover");
                 clearItemCursor()
                 return;
