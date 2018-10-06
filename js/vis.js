@@ -373,7 +373,7 @@ function swapItemBarWithCursor(itemBarIndex){
     var itemInSlot = itemSlots[itemBarIndex];
     var itemInCursor = {
         id:     itemCursor.attr("item-id"),
-        amount: itemCursor.attr("amount")
+        amount: parseInt(itemCursor.attr("amount"))
     };
 
     clearItemCursor();
