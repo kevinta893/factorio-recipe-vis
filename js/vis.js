@@ -29,9 +29,7 @@ var initItemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel
 var itemSlots = [];
 var itemSlotsVis = [];
 var itemSlotsOverlay = [];
-var itemCategoryIconLocation = "./images/category/";
-var itemIconLocation = "./images/";
-var itemBlankImage = "blank.png";
+
 var itemCursor;
 
 //keyboard hold downs
@@ -151,7 +149,7 @@ function initVis(){
     $("#item-bar-overlay .item-slot").attr("class", "item-slot-overlay");
 
     //setup cursor item clicking
-    itemCursor = new ItemCursor(itemIconLocation);
+    itemCursor = new ItemCursor();
     //setup cursor events
     itemCursor.element().on("click", function(e){
         var mouseX = e.pageX;

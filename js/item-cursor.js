@@ -1,10 +1,15 @@
+var itemCategoryIconLocation = "./images/category/";
+var itemIconLocation = "./images/";
+var itemBlankImage = "blank.png";
+
+
+
 class ItemCursor{
 
     constructor(itemIconLocation){
         //fields
         this.itemId = "";
         this.itemCount = 0;
-        this.ITEM_ICON_LOCATION = itemIconLocation;
 
         //document layout vars
         this.cursor = $("#item-cursor");
@@ -35,7 +40,7 @@ class ItemCursor{
         this.itemId = itemId;
         this.itemCount = amount;
 
-        this.cursorImage.attr("src", this.ITEM_ICON_LOCATION + itemId + ".png");
+        this.cursorImage.attr("src", itemIconLocation + itemId + ".png");
         this.cursorText.text(amount)
 
         this.setVisible(true);
