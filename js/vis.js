@@ -138,7 +138,7 @@ function initVis(){
             //there's an item in the slot
             var itemAmount = itemSlots[itemSlotIndex].amount;
             removeItemBarItem(itemSlotIndex);
-            attachItemToCursor(slotItemId, itemAmount);
+            itemCursor.setItem(slotItemId, itemAmount);
         }
     });
 
@@ -151,7 +151,121 @@ function initVis(){
     $("#item-bar-overlay .item-slot").attr("class", "item-slot-overlay");
 
     //setup cursor item clicking
-    itemCursor = $("#item-cursor");
+    itemCursor = new ItemCursor(itemIconLocation);
+    //setup cursor events
+    itemCursor.element().on("click", function(e){
+        var mouseX = e.pageX;
+        var mouseY = e.pageY;
+
+        //find the overlapping slot in the item bar
+        var slotOverlapped;
+        for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
+            var itemSlot = itemSlotsOverlay[i];
+            if (pointOverlap(mouseX, mouseY, itemSlot)){
+                slotOverlapped = itemSlot;
+                break;
+            }
+        }
+
+        //if there is a slot being hovered over, then attach item to the item slot
+        if (slotOverlapped != null){
+            //dropped on top of an item slot. we add to that item slot
+            var cursorItemId = itemCursor.getItemId();
+            var cursorAmount = itemCursor.getItemCount();
+            var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
+
+            if (itemSlots[itemSlotIndex].id != "" && itemSlots[itemSlotIndex].id != cursorItemId){
+                //cursor has item, item bar has item, swap their contents
+                swapItemBarWithCursor(itemSlotIndex);
+                return;
+            }else{
+                //empty slot otherwise
+                setItemBarItem(itemSlotIndex, cursorItemId, cursorAmount);
+                itemSlot.removeClass("hover");
+                itemCursor.clearItem();
+                return;
+            }
+        }
+
+
+        //case 2, hovering over top its own item slot
+        var itemOriginal = $("#inventory-"+itemCursor.getItemId());
+        var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
+        if (overlap){
+            //clicked on own item slot, so increment the current amount
+            itemOriginal.addClass("hover");
+
+            //if shift, add 5
+            if (isKeyDown.Shift){
+                itemCursor.incrementItemCount(5);
+            }else{
+                itemCursor.incrementItemCount(1);
+            }
+
+            return;
+        }
+
+
+        //case 3, clicking anywhere else clears the cursor
+        itemCursor.clearItem();
+        return;
+    });
+
+    $(document).on("mousemove", function(e){
+        var mouseX = e.pageX;
+        var mouseY = e.pageY;
+
+        var width = itemCursor.getWidth();
+        var height = itemCursor.getHeight();
+
+        var maxX = $(document).width() - width + (width/2);
+        var maxY = $(document).height() - height + (height/2) -3;        //note that the height grows to fit, hence constant
+
+        var minX = 0;
+        var minY = 0;
+
+        //clamp the position to within the page
+        var x = Math.min(maxX, mouseX);
+        var y = Math.min(maxY, mouseY);
+        x = Math.max(minX, x);
+        y = Math.max(minY, y);
+
+        itemCursor.element().css({
+            left: x-(width/2),
+            top: y-(height/2),
+            cursor: "none"
+        });
+
+        //anytime an item overlaps an itemslot, do the hover event
+        if (itemCursor.isVisible()){
+            //check if the cursor overlaps an item slot
+            for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
+                var itemSlot = itemSlotsOverlay[i];
+                var overlap = pointOverlap(mouseX, mouseY, itemSlot);
+                if (overlap){
+                    itemSlot.addClass("hover");
+                }else{
+                    itemSlot.removeClass("hover");
+                }
+
+            }
+
+            //also check if the item hovers itself on the item list
+            var itemOriginal = $("#inventory-"+itemCursor.getItemId());
+            var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
+            if (overlap){
+                itemOriginal.addClass("hover");
+            }else{
+                itemOriginal.removeClass("hover");
+            }
+        }
+    });
+
+
+    itemCursor.clearItem();
+
+
+    //setup item slots
     itemSlotsVis = [];
     $("#item-bar-vis .item-slot").each(function (i, obj){
         itemSlotsVis.push($(obj));
@@ -176,161 +290,9 @@ function initVis(){
     //inventory close event
     $("#inventory-background").on("click", closeInventory);
 
-
-    //item cursor mouse move event
-    $(document).on("mousemove", function(e){
-        var mouseX = e.pageX;
-        var mouseY = e.pageY;
-
-        var width = itemCursor.width();
-        var height = itemCursor.height();
-
-        var maxX = $(document).width() - width + (width/2);
-        var maxY = $(document).height() - height + (height/2) -3;        //note that the height grows to fit, hence constant
-
-        var minX = 0;
-        var minY = 0;
-
-        //clamp the position to within the page
-        var x = Math.min(maxX, mouseX);
-        var y = Math.min(maxY, mouseY);
-        x = Math.max(minX, x);
-        y = Math.max(minY, y);
-
-        itemCursor.css({
-            left: x-(width/2),
-            top: y-(height/2),
-            cursor: "none"
-        });
-
-        //anytime an item overlaps an itemslot, do the hover event
-        if (itemCursor.is(":visible")){
-            //check if the cursor overlaps an item slot
-            for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
-                var itemSlot = itemSlotsOverlay[i];
-                var overlap = pointOverlap(mouseX, mouseY, itemSlot);
-                if (overlap){
-                    itemSlot.addClass("hover");
-                }else{
-                    itemSlot.removeClass("hover");
-                }
-
-            }
-
-            //also check if the item hovers itself on the item list
-            var itemOriginal = $("#inventory-"+itemCursor.attr("item-id"));
-            var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
-            if (overlap){
-                itemOriginal.addClass("hover");
-            }else{
-                itemOriginal.removeClass("hover");
-            }
-        }
-
-    });
-
-    //Event: detect when item is dropped onto the overlay item bar
-    itemCursor.on("click", function(e){
-        var mouseX = e.pageX;
-        var mouseY = e.pageY;
-
-        //find the overlapping slot in the item bar
-        var slotOverlapped;
-        for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
-            var itemSlot = itemSlotsOverlay[i];
-            if (pointOverlap(mouseX, mouseY, itemSlot)){
-                slotOverlapped = itemSlot;
-                break;
-            }
-        }
-
-        //if there is a slot being hovered over, then attach item to the item slot
-        if (slotOverlapped != null){
-            //dropped on top of an item slot. we add to that item slot
-            var cursorItemId = itemCursor.attr("item-id");
-            var cursorAmount = parseInt(itemCursor.attr("amount"));
-            var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
-
-            if (itemSlots[itemSlotIndex].id != "" && itemSlots[itemSlotIndex].id != cursorItemId){
-                //cursor has item, item bar has item, swap their contents
-                swapItemBarWithCursor(itemSlotIndex);
-                return;
-            }else{
-                //empty slot otherwise
-                setItemBarItem(itemSlotIndex, cursorItemId, cursorAmount);
-                itemSlot.removeClass("hover");
-                clearItemCursor()
-                return;
-            }
-        }
-
-
-        //case 2, hovering over top its own item slot
-        var itemOriginal = $("#inventory-"+itemCursor.attr("item-id"));
-        var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
-        if (overlap){
-            //clicked on own item slot, so increment the current amount
-            itemOriginal.addClass("hover");
-
-            //if shift, add 5
-            if (isKeyDown.Shift){
-                incrementItemCursor(5);
-            }else{
-                incrementItemCursor(1);
-            }
-
-            return;
-        }
-
-
-        //case 3, clicking anywhere else clears the cursor
-        clearItemCursor();
-        return;
-
-    });
-    //reset the item cursor
-    clearItemCursor();
 }
 
 
-
-function attachItemToCursor(itemId, amount){
-
-    //currently held item is not the same, then change and reset amount
-    if (itemCursor.attr("item-id") != itemId){
-        clearItemCursor();
-    }
-
-
-    var recipe = recipes[itemId];
-    $("#item-cursor-icon").attr("src", itemIconLocation + "/" + recipe.id + ".png");
-    $("#item-cursor-amount").text(amount);
-    itemCursor.attr("item-id", recipe.id);
-    itemCursor.attr("amount", amount);
-    itemCursor.show();
-}
-
-function incrementItemCursor(amount){
-    if (itemCursor.attr("item-id") == ""){
-        //cursor is currently cleared, do nothing
-        return;
-    }
-
-    var newAmount = parseInt(itemCursor.attr("amount")) + amount;
-    itemCursor.attr("amount", newAmount);
-    $("#item-cursor-amount").text(newAmount);
-
-}
-
-function clearItemCursor(){
-    itemCursor.hide();
-    $("#item-cursor-icon").attr("src", "");
-    $("#item-cursor-amount").text(0);
-    itemCursor.attr("item-id", "");
-    itemCursor.attr("amount", 0);
-    itemCursor.css({cursor: "auto"});
-    $(".item").removeClass("hover");
-}
 
 function setItemBarItem(index, itemId, amount){
 
@@ -382,12 +344,12 @@ function setItemBarItem(index, itemId, amount){
 function swapItemBarWithCursor(itemBarIndex){
     var itemInSlot = itemSlots[itemBarIndex];
     var itemInCursor = {
-        id:     itemCursor.attr("item-id"),
-        amount: parseInt(itemCursor.attr("amount"))
+        id:     itemCursor.getItemId(),
+        amount: itemCursor.getItemCount()
     };
 
-    clearItemCursor();
-    attachItemToCursor( itemInSlot.id, itemInSlot.amount);
+    itemCursor.clearItem();
+    itemCursor.setItem( itemInSlot.id, itemInSlot.amount);
     removeItemBarItem(itemBarIndex);
     setItemBarItem(itemBarIndex, itemInCursor.id, itemInCursor.amount);
 }
@@ -516,19 +478,19 @@ function initInventoryMenu(){
             .on("click", function (d) {
                 var itemId = d;
                 //if we are already holding an item, add one
-                if (itemCursor.attr("item-id") == itemId){
+                if (itemCursor.getItemId() == itemId){
                     //if either the shift keys are down, instead add 5 units
                     if (isKeyDown.Shift){
                         console.log("??? Not supposed to be here");
                     }
-                } else if (itemCursor.attr("item-id") == "") {
+                } else if (itemCursor.getItemId() == "") {
                     //nothing, attach to cursor
                     if(isKeyDown.Shift){
                         //shift is held, add 5 at a time
-                        attachItemToCursor(itemId, 5);
+                        itemCursor.setItem(itemId, 5);
                     } else {
                         //regular click made, add one
-                        attachItemToCursor(itemId, 1);
+                        itemCursor.setItem(itemId, 1);
                     }
                 }
             })
