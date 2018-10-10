@@ -28,6 +28,7 @@ var initItemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel
     {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0}];
 var itemSlots;
 var itemCursor;
+var itemInventory;
 
 //keyboard hold downs
 var isKeyDown = {};
@@ -69,8 +70,6 @@ function initVis(){
                 itemSlots.setItemSlot(i, initItemSlots[i].id, 1);
             }
         }
-
-        initInventoryMenu();
 
         console.log("Recipes database loaded");
         updateVis();
@@ -125,6 +124,12 @@ function initVis(){
     itemCursor = new ItemCursor();
     //setup cursor events
     itemCursor.element().on("click", function(e){
+
+        if (itemCursor.hasItem() == false){
+            //no item, do nothing. or maybe just clear to be sure
+            itemCursor.clearItem();
+        }
+
         var mouseX = e.pageX;
         var mouseY = e.pageY;
 
@@ -168,7 +173,7 @@ function initVis(){
 
 
         //case 2, hovering over top its own item slot
-        var itemOriginal = $("#inventory-"+itemCursor.getItemId());
+        var itemOriginal = itemInventory.getItemElement(itemCursor.getItemId()).element;
         var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
         if (overlap){
             //clicked on own item slot, so increment the current amount
@@ -231,7 +236,7 @@ function initVis(){
 
 
             //also check if the item hovers itself on the item list
-            var itemOriginal = $("#inventory-"+itemCursor.getItemId());
+            var itemOriginal = itemInventory.getItemElement(itemCursor.getItemId()).element;
             var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
             if (overlap){
                 itemOriginal.addClass("hover");
@@ -246,6 +251,44 @@ function initVis(){
 
 
 
+    //initialize the inventory
+    itemInventory = new ItemInventory("#inventory")
+
+    var inventoryRoot = d3.select("#inventory");
+
+    // setup events for each item
+    var itemElements = itemInventory.getAllItemElements();
+    for (var i = 0 ; i < itemElements.length ; i++){
+        var element = itemElements[i].element;
+        element.on("click", function (e){
+            var itemId = $(this).attr("item-id");
+            //if we are already holding an item, add one
+            if (itemCursor.getItemId() == itemId){
+                //if either the shift keys are down, instead add 5 units
+                if (isKeyDown.Shift){
+                    console.log("??? Not supposed to be here");
+                }
+            } else if (itemCursor.getItemId() == "") {
+                //nothing, attach to cursor
+                if(isKeyDown.Shift){
+                    //shift is held, add 5 at a time
+                    itemCursor.setItem(itemId, 5);
+                } else {
+                    //regular click made, add one
+                    itemCursor.setItem(itemId, 1);
+                }
+            }
+        });
+        element.on("mouseover", function(e){
+            //hover, activate info panel
+            var itemId = $(this).attr("item-id");
+            setItemInfo(itemId);
+        });
+        element.on("mouseleave", function(e){
+            //hover, activate info panel
+            clearItemInfo();
+        });
+    }
 
 }
 
@@ -263,141 +306,6 @@ function swapItemBarWithCursor(itemBarIndex){
 }
 
 
-
-function initInventoryMenu(){
-
-    var logistics = [
-        ["wooden-chest","iron-chest","steel-chest","storage-tank"],
-        ["transport-belt","fast-transport-belt","express-transport-belt","underground-belt","fast-underground-belt","express-underground-belt","splitter","fast-splitter","express-splitter"],
-        ["burner-inserter","inserter","long-handed-inserter","fast-inserter","filter-inserter","stack-inserter","stack-filter-inserter"],
-        ["small-electric-pole","medium-electric-pole","big-electric-pole","substation","pipe","pipe-to-ground","pump"],
-        ["rail","train-stop","rail-signal","rail-chain-signal","locomotive","cargo-wagon","fluid-wagon","artillery-wagon","car","tank"],
-        ["logistic-robot","construction-robot","active-provider-chest","passive-provider-chest","storage-chest","buffer-chest","requester-chest","roboport"],
-        ["lamp","red-wire","green-wire","arithmetic-combinator","decider-combinator","constant-combinator","power-switch","programmable-speaker"],
-        ["stone-brick","concrete","hazard-concrete","refined-concrete","refined-hazard-concrete","landfill","cliff-explosives"]
-    ];
-    var production = [
-        ["iron-axe","steel-axe","repair-pack","blueprint","deconstruction-planner","blueprint-book"],
-        ["boiler","steam-engine","steam-turbine","solar-panel","accumulator","nuclear-reactor","heat-exchanger","heat-pipe"],
-        ["burner-mining-drill","electric-mining-drill","offshore-pump","pumpjack"],
-        ["stone-furnace","steel-furnace","electric-furnace"],
-        ["assembling-machine-1","assembling-machine-2","assembling-machine-3","oil-refinery","chemical-plant","centrifuge","lab"],
-        ["beacon","speed-module","speed-module-2","speed-module-3","efficiency-module","efficiency-module-2","efficiency-module-3","productivity-module","productivity-module-2","productivity-module-3"],
-
-    ];
-    var intermediateProducts = [
-        ["raw-wood","coal","stone","iron-ore","copper-ore","uranium-ore","raw-fish"],
-        ["crude-oil","heavy-oil","light-oil","lubricant","petroleum-gas","sulfuric-acid","water","steam"],
-        ["wood","iron-plate","copper-plate","solid-fuel","steel-plate","plastic-bar","sulfur","battery","explosives","uranium-processing"],
-        ["copper-cable","iron-stick","iron-gear-wheel","empty-barrel","electronic-circuit","advanced-circuit","processing-unit","engine-unit","electric-engine-unit","flying-robot-frame"],
-        ["satellite","rocket-part","rocket-control-unit","low-density-structure","rocket-fuel"],
-        ["nuclear-fuel","uranium-235","uranium-238","uranium-fuel-cell","used-up-uranium-fuel-cell","nuclear-fuel-reprocessing","kovarex-enrichment-process"],
-        ["science-pack-1","science-pack-2","science-pack-3","military-science-pack","production-science-pack","high-tech-science-pack","space-science-pack"]
-    ];
-    var combat = [
-        ["pistol","submachine-gun","shotgun","combat-shotgun","rocket-launcher","flamethrower","land-mine"],
-        ["firearm-magazine","piercing-rounds-magazine","uranium-rounds-magazine","shotgun-shells","piercing-shotgun-shells","cannon-shell","explosive-cannon-shell","uranium-cannon-shell","explosive-uranium-cannon-shell","artillery-shell","rocket","explosive-rocket","atomic-bomb","flamethrower-ammo"],
-        ["grenade","cluster-grenade","poison-capsule","slowdown-capsule","defender-capsule","distractor-capsule","destroyer-capsule","discharge-defense-remote","artillery-targeting-remote"],
-        ["light-armor","heavy-armor","modular-armor","power-armor","power-armor-mk2"],
-        ["portable-solar-panel","portable-fusion-reactor","energy-shield","energy-shield-mk2","battery-mk1","battery-mk2","personal-laser-defense","discharge-defense","exoskeleton","personal-roboport","personal-roboport-mk2","nightvision"],
-        ["stone-wall","gate","gun-turret","laser-turret","flamethrower-turret","artillery-turret","radar","rocket-silo"]
-    ];
-
-    var inventoryCategories = [
-        {"name": "Logistics", "id" : "logistics", "img": "logistics.png", "list": logistics},
-        {"name": "Production","id" : "production",  "img": "production.png", "list": production},
-        {"name": "Intermediate Products", "id" : "intermediate-products",  "img": "intermediate_products.png", "list": intermediateProducts},
-        {"name": "Combat", "id" : "combat", "img": "combat.png", "list": combat},
-    ];
-
-
-
-
-    var inventoryRoot = d3.select("#inventory");
-
-    //prepare category buttons
-    var categoryRoot = inventoryRoot.selectAll(".category")
-        .data(inventoryCategories)
-        .enter()
-        .append("div")
-        .attr("class", "category-button");
-
-    //setup category heading
-    categoryRoot.append("img")
-        .attr("src", function(d){
-            return itemCategoryIconLocation + "/" + d.img;
-        })
-        .on("click", function(d){
-            $(".category-items").hide();
-            $("#cat-" + d.id).show();
-        });
-
-    //for each category, prepare each row
-    var categoryItems = inventoryRoot.selectAll(".category-items")
-        .data(inventoryCategories)
-        .enter()
-        .append("div")
-        .attr("class", "category-items")
-        .attr("id", function (d) {
-            return "cat-" + d.id;
-        });
-
-
-    var itemRows = categoryItems.selectAll(".item-row").append("div")
-        .data(function(d){
-            return d.list;
-        })
-        .enter()
-        .append("div")
-        .attr("class", "item-row");
-
-    //for each row, prepare the item itself.
-    itemRows.selectAll(".item")
-        .data(function(d){
-            return d;
-        })
-        .enter()
-        .append("div")
-        .attr("class", "item")
-        .attr("id", function(d){
-            return "inventory-"+ d;
-        })
-            .append("img")
-            .attr("src", function(d){
-                return itemIconLocation + "/" + recipes[d].id + ".png";
-            })
-            .on("click", function (d) {
-                var itemId = d;
-                //if we are already holding an item, add one
-                if (itemCursor.getItemId() == itemId){
-                    //if either the shift keys are down, instead add 5 units
-                    if (isKeyDown.Shift){
-                        console.log("??? Not supposed to be here");
-                    }
-                } else if (itemCursor.getItemId() == "") {
-                    //nothing, attach to cursor
-                    if(isKeyDown.Shift){
-                        //shift is held, add 5 at a time
-                        itemCursor.setItem(itemId, 5);
-                    } else {
-                        //regular click made, add one
-                        itemCursor.setItem(itemId, 1);
-                    }
-                }
-            })
-        .on("mouseover", function(d){
-            //hover, activate info panel
-            setItemInfo(d);
-        })
-        .on("mouseleave", function(d){
-            clearItemInfo();
-        });
-
-
-    //hide all but the first category
-    $(".category-items").hide();
-    $("#cat-" + inventoryCategories[0].name.toLowerCase()).show();
-}
 
 function setItemInfo(itemId){
     var recipe = recipes[itemId];

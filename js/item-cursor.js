@@ -138,7 +138,7 @@ class ItemBar{
 
         //add all the html elements for the slots
         var slotElements = [];
-        $(parentDiv).find(".item-slot").each(function(element){
+        $(parentDiv).find(".item-slot").each(function(){
             slotElements.push($(this));
         });
 
@@ -233,4 +233,210 @@ class ItemBar{
         return ret;
     }
 
+}
+
+
+class ItemInventory{
+
+    constructor(parentDiv){
+        this.parentDiv = parentDiv;
+
+        //rows of items
+        var logistics = [
+            ["wooden-chest","iron-chest","steel-chest","storage-tank"],
+            ["transport-belt","fast-transport-belt","express-transport-belt","underground-belt","fast-underground-belt","express-underground-belt","splitter","fast-splitter","express-splitter"],
+            ["burner-inserter","inserter","long-handed-inserter","fast-inserter","filter-inserter","stack-inserter","stack-filter-inserter"],
+            ["small-electric-pole","medium-electric-pole","big-electric-pole","substation","pipe","pipe-to-ground","pump"],
+            ["rail","train-stop","rail-signal","rail-chain-signal","locomotive","cargo-wagon","fluid-wagon","artillery-wagon","car","tank"],
+            ["logistic-robot","construction-robot","active-provider-chest","passive-provider-chest","storage-chest","buffer-chest","requester-chest","roboport"],
+            ["lamp","red-wire","green-wire","arithmetic-combinator","decider-combinator","constant-combinator","power-switch","programmable-speaker"],
+            ["stone-brick","concrete","hazard-concrete","refined-concrete","refined-hazard-concrete","landfill","cliff-explosives"]
+        ];
+        var production = [
+            ["iron-axe","steel-axe","repair-pack","blueprint","deconstruction-planner","blueprint-book"],
+            ["boiler","steam-engine","steam-turbine","solar-panel","accumulator","nuclear-reactor","heat-exchanger","heat-pipe"],
+            ["burner-mining-drill","electric-mining-drill","offshore-pump","pumpjack"],
+            ["stone-furnace","steel-furnace","electric-furnace"],
+            ["assembling-machine-1","assembling-machine-2","assembling-machine-3","oil-refinery","chemical-plant","centrifuge","lab"],
+            ["beacon","speed-module","speed-module-2","speed-module-3","efficiency-module","efficiency-module-2","efficiency-module-3","productivity-module","productivity-module-2","productivity-module-3"],
+
+        ];
+        var intermediateProducts = [
+            ["raw-wood","coal","stone","iron-ore","copper-ore","uranium-ore","raw-fish"],
+            ["crude-oil","heavy-oil","light-oil","lubricant","petroleum-gas","sulfuric-acid","water","steam"],
+            ["wood","iron-plate","copper-plate","solid-fuel","steel-plate","plastic-bar","sulfur","battery","explosives","uranium-processing"],
+            ["copper-cable","iron-stick","iron-gear-wheel","empty-barrel","electronic-circuit","advanced-circuit","processing-unit","engine-unit","electric-engine-unit","flying-robot-frame"],
+            ["satellite","rocket-part","rocket-control-unit","low-density-structure","rocket-fuel"],
+            ["nuclear-fuel","uranium-235","uranium-238","uranium-fuel-cell","used-up-uranium-fuel-cell","nuclear-fuel-reprocessing","kovarex-enrichment-process"],
+            ["science-pack-1","science-pack-2","science-pack-3","military-science-pack","production-science-pack","high-tech-science-pack","space-science-pack"]
+        ];
+        var combat = [
+            ["pistol","submachine-gun","shotgun","combat-shotgun","rocket-launcher","flamethrower","land-mine"],
+            ["firearm-magazine","piercing-rounds-magazine","uranium-rounds-magazine","shotgun-shells","piercing-shotgun-shells","cannon-shell","explosive-cannon-shell","uranium-cannon-shell","explosive-uranium-cannon-shell","artillery-shell","rocket","explosive-rocket","atomic-bomb","flamethrower-ammo"],
+            ["grenade","cluster-grenade","poison-capsule","slowdown-capsule","defender-capsule","distractor-capsule","destroyer-capsule","discharge-defense-remote","artillery-targeting-remote"],
+            ["light-armor","heavy-armor","modular-armor","power-armor","power-armor-mk2"],
+            ["portable-solar-panel","portable-fusion-reactor","energy-shield","energy-shield-mk2","battery-mk1","battery-mk2","personal-laser-defense","discharge-defense","exoskeleton","personal-roboport","personal-roboport-mk2","nightvision"],
+            ["stone-wall","gate","gun-turret","laser-turret","flamethrower-turret","artillery-turret","radar","rocket-silo"]
+        ];
+
+        var inventoryCategories = [
+            {"name": "Logistics", "id" : "logistics", "img": "logistics.png", "list": logistics},
+            {"name": "Production","id" : "production",  "img": "production.png", "list": production},
+            {"name": "Intermediate Products", "id" : "intermediate-products",  "img": "intermediate_products.png", "list": intermediateProducts},
+            {"name": "Combat", "id" : "combat", "img": "combat.png", "list": combat},
+        ];
+
+
+
+
+        var inventoryRoot = d3.select(parentDiv);
+
+        //prepare category buttons
+        var categoryRoot = inventoryRoot.selectAll(".category")
+            .data(inventoryCategories)
+            .enter()
+            .append("div")
+            .attr("class", "category-button")
+            .attr("category-id", function(d){
+                return d.id;
+            })
+            .attr("category-index", function(d, i){
+                return i;
+            });
+
+        //setup category heading
+        categoryRoot.append("img")
+            .attr("src", function(d){
+                return itemCategoryIconLocation + "/" + d.img;
+            });
+
+
+        //for each category, prepare each row
+        var categoryItems = inventoryRoot.selectAll(".category-items")
+            .data(inventoryCategories)
+            .enter()
+            .append("div")
+            .attr("class", "category-items")
+            .attr("category-id", function (d) {
+                return d.id;
+            })
+            .attr("category-index", function(d, i){
+                return i;
+            });
+
+
+        var itemRows = categoryItems.selectAll(".item-row").append("div")
+            .data(function(d){
+                return d.list;
+            })
+            .enter()
+            .append("div")
+            .attr("class", "item-row");
+
+        //for each row, prepare the item itself.
+        itemRows.selectAll(".item")
+            .data(function(d){
+                return d;
+            })
+            .enter()
+            .append("div")
+            .attr("class", "item")
+            .attr("item-id", function(d){
+                return d;
+            })
+            .append("img")
+            .attr("src", function(d){
+                return itemIconLocation + "/" + d + ".png";
+            });
+
+
+        //collect all the items
+        var itemElements = [];
+        var itemElementsDictionary = {};
+        $(parentDiv).find(".item").each(function(){
+            var item = $(this);
+            var obj = {
+                id: item.attr("item-id"),
+                element: item
+            }
+            itemElements.push(obj);
+            itemElementsDictionary[obj.id] = obj;
+        });
+        this.itemElements = itemElements;
+        this.itemElementsDictionary = itemElementsDictionary;
+
+
+        //collect all the category button elements
+        var categoryButtonElements = [];
+        $(parentDiv).find(".category-button").each(function(){
+            var categoryButton = $(this);
+            var obj = {
+                id: categoryButton.attr("category-id"),
+                element: categoryButton
+            }
+            categoryButtonElements.push(obj);
+        });
+        this.categoryButtonElements = categoryButtonElements;
+
+
+        //collect all category elements
+        var categoryElements = [];
+        $(parentDiv).find(".category-items").each(function(){
+            var categoryElement = $(this);
+            var obj = {
+                id: categoryElement.attr("category-id"),
+                element: categoryElement
+            }
+            categoryElements.push(obj);
+        });
+        this.categoryElements = categoryElements;
+
+
+        //default show the first category
+        this.showCategory(0);
+
+
+
+        //setup events for the category buttons
+        var categoryButtons = this.getAllCategoryButtonElements();
+        var categories = this.getAllCategoryElements();
+        for (var i = 0 ; i < categoryButtons.length ; i++){
+            var buttonElement = categoryButtons[i].element;
+            buttonElement.on("click", function (e){
+                var categoryIndex = parseInt($(this).attr("category-index"));
+                categories.forEach(function (c){
+                    c.element.hide();
+                });
+
+                categories[categoryIndex].element.show();
+            });
+        }
+    }
+
+
+    getAllItemElements(){
+        return this.itemElements;
+    }
+
+    getItemElement(itemId){
+        return this.itemElementsDictionary[itemId];
+    }
+
+    getAllCategoryElements(){
+        return this.categoryElements;
+    }
+
+    getAllCategoryButtonElements(){
+        return this.categoryButtonElements;
+    }
+
+
+
+    showCategory(categoryIndex){
+        for (var i =0 ; i < this.categoryElements.length ; i++){
+            this.categoryElements[i].element.hide();
+        }
+
+        this.categoryElements[categoryIndex].element.show();
+    }
 }
