@@ -114,6 +114,8 @@ class ItemBar{
 
 
         //setup the visualization
+        $(parentDiv).attr("class", "item-bar");
+
         var itemSlotsElement = d3.select(parentDiv).append("div")
             .attr("class", "item-slot-container")
             .selectAll(".item-slot")
