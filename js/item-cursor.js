@@ -173,17 +173,8 @@ class ItemBar{
 
         //set amount, recalcuate textbox positioning
         var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
-        var referenceSlot = this.itemSlots[0].element[0].getBoundingClientRect();
+        //var referenceSlot = this.itemSlots[0].element[0].getBoundingClientRect();
         var slotDimensions = this.itemSlots[index].element[0].getBoundingClientRect();
-        /*
-        var slotDimensions = {
-            x: referenceSlot.offset().x,
-            y: referenceSlot.offset().y,
-            width: referenceSlot.width(),
-            height: referenceSlot.height()
-        };
-        */
-
         var textDimensions = slotElement.find("div")[0].getBoundingClientRect();
         var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
         var y = slotDimensions.y - slotContainer.y + slotDimensions.height - textDimensions.height- 2;
