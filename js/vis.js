@@ -128,6 +128,7 @@ function initVis(){
         var mouseX = e.pageX;
         var mouseY = e.pageY;
 
+        //case 1, hovering over an item bar item slot
         //find the overlapping slot in the item bar
         var slotOverlapped;
         var itemSlotsOverlapList = itemSlots.getAllSlotElements();
@@ -151,11 +152,16 @@ function initVis(){
                 //cursor has item, item bar has item, swap their contents
                 swapItemBarWithCursor(itemSlotIndex);
                 return;
-            }else{
+            } else if (itemInSlot.id == cursorItemId){
+                //cursor and item slot are both the same item, add together the amounts, clear cursor
+                itemSlots.setItemSlot(itemSlotIndex, itemInSlot.id, itemInSlot.amount + cursorAmount);
+                itemCursor.clearItem();
+                return;
+            } else{
                 //empty slot otherwise
                 itemSlots.setItemSlot(itemSlotIndex, cursorItemId, cursorAmount);
-                itemSlot.removeClass("hover");
                 itemCursor.clearItem();
+                itemSlot.removeClass("hover");
                 return;
             }
         }
