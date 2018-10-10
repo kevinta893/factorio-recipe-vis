@@ -221,14 +221,14 @@ function initVis(){
             var itemSlotsOverlapList = itemSlots.getAllSlotElements();
             for (var i = 0 ; i < itemSlotsOverlapList.length ; i++){
                 var itemSlot = itemSlotsOverlapList[i];
-                var overlap = pointOverlap(mouseX, mouseY, itemSlot);
-                if (overlap){
+                if (pointOverlap(mouseX, mouseY, itemSlot)){
                     itemSlot.addClass("hover");
-                }else{
+                } else{
                     itemSlot.removeClass("hover");
                 }
-
             }
+
+
 
             //also check if the item hovers itself on the item list
             var itemOriginal = $("#inventory-"+itemCursor.getItemId());
