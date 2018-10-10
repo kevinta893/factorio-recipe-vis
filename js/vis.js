@@ -26,10 +26,7 @@ var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g
 //item bar initial config
 var initItemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel", amount: 1}, {id: "assembling-machine-1", amount: 1}, {id: "", amount: 0},{id: "", amount: 0},
     {id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0},{id: "", amount: 0}];
-var itemSlots = [];
-var itemSlotsVis = [];
-var itemSlotsOverlay = [];
-
+var itemSlots;
 var itemCursor;
 
 //keyboard hold downs
@@ -47,10 +44,6 @@ initVis();
 
 
 function initVis(){
-    //setup item slots with blanks
-    for (var i = 0 ; i < initItemSlots.length ; i++) {
-        itemSlots[i] = {id: "", amount: 0};
-    }
 
     $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
         if (err != "success"){
@@ -73,13 +66,13 @@ function initVis(){
         //setup item bar with the initial items
         for (var i = 0 ; i < initItemSlots.length ; i++){
             if (initItemSlots[i].id != ""){
-                setItemBarItem(i, initItemSlots[i].id, 1);
+                itemSlots.setItemSlot(i, initItemSlots[i].id, 1);
             }
         }
 
         initInventoryMenu();
 
-        console.log("Recipes Loaded");
+        console.log("Recipes database loaded");
         updateVis();
     });
 
@@ -96,59 +89,39 @@ function initVis(){
 
 
     //initalize the item bar on vis
-    itemSlotsElement =d3.select("#item-bar-vis").append("div")
-        .attr("class", "item-slot-container")
-        .selectAll(".item-slot")
-        .data(itemSlots)
-        .enter()
-            .append("div")
-            .attr("id", function(d, i){
-                return "item-slot-" + i;
-            })
-            .attr("index", function(d, i){return i})
-            .attr("class", "item-slot");
+    itemSlots = new ItemBar("#item-bar-vis", 10, initItemSlots);
 
-    //add image
-    itemSlotsElement.append("img")
-        .attr("src", itemIconLocation + itemBlankImage);
+    //add initial items to the item bar
+    for (var i = 0; i < initItemSlots.length; i++){
+        var initItem = initItemSlots[i];
+        itemSlots.setItemSlot(i, initItem.id, initItem.amount);
+    }
 
-    //add item text
-    var slotContainer = d3.select(".item-slot-container").node().getBoundingClientRect();
-    itemSlotsElement.append("div")
-        .attr("class", "item-icon-text item-bar-icon-text")
-        .text("")
-        .attr("style", function (d){
-            var slotDimensions = d3.select(this.parentNode).node().getBoundingClientRect();
-            var textDimensions = d3.select(this).node().getBoundingClientRect();
-            var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
-            var y = slotDimensions.y - slotContainer.y + slotDimensions.height -  textDimensions.height -2;
-            return "left: " + x + "; " +
-                "top: " + y + "; ";
+    //setup the click event for all slot elements
+    var itemSlotElements = itemSlots.getAllSlots();
+    for (var i = 0 ; i < itemSlotElements.length ; i++ ) {
+        itemSlotElements[i].element.on("click", function (e) {
+            showInventory();
+            var itemSlotIndex = parseInt($(this).attr("index"));
+            var slotItem = itemSlots.getItemInSlot(itemSlotIndex);
+
+            if (slotItem.id != "" && slotItem.id.length > 0) {
+                //there's an item in the slot, add to cursor
+                var itemAmount = slotItem.amount;
+                itemCursor.setItem(slotItem.id, slotItem.amount);
+                itemSlots.clearItemSlot(itemSlotIndex);
+            }
         });
-
-    $(".item-slot").on("click", function(e){
-        showInventory();
-        var itemSlot = $(this);
-        var itemSlotIndex = parseInt(itemSlot.attr("index"));
-        var slotItemId = itemSlot.attr("item-id");
-
-        if (slotItemId != null && slotItemId.length > 0){
-            //there's an item in the slot
-            var itemAmount = itemSlots[itemSlotIndex].amount;
-            removeItemBarItem(itemSlotIndex);
-            itemCursor.setItem(slotItemId, itemAmount);
-        }
-    });
+    }
 
 
-    //setup inventory bar in the overlay. Clone from main page
-    var itemBarVis = $("#item-bar-vis");
-    var itemBar = itemBarVis.clone(true).appendTo("#inventory-overlay");
-    itemBar.attr("id", "item-bar-overlay");
-    itemBar.attr("class", "item-bar");
-    $("#item-bar-overlay .item-slot").attr("class", "item-slot-overlay");
+    //inventory close event
+    $("#inventory-background").on("click", closeInventory);
 
-    //setup cursor item clicking
+
+
+
+    //setup item cursor
     itemCursor = new ItemCursor();
     //setup cursor events
     itemCursor.element().on("click", function(e){
@@ -157,8 +130,9 @@ function initVis(){
 
         //find the overlapping slot in the item bar
         var slotOverlapped;
-        for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
-            var itemSlot = itemSlotsOverlay[i];
+        var itemSlotsOverlapList = itemSlots.getAllSlotElements();
+        for (var i = 0 ; i < itemSlotsOverlapList.length ; i++){
+            var itemSlot = itemSlotsOverlapList[i];
             if (pointOverlap(mouseX, mouseY, itemSlot)){
                 slotOverlapped = itemSlot;
                 break;
@@ -171,14 +145,15 @@ function initVis(){
             var cursorItemId = itemCursor.getItemId();
             var cursorAmount = itemCursor.getItemCount();
             var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
+            var itemInSlot = itemSlots.getItemInSlot(itemSlotIndex);
 
-            if (itemSlots[itemSlotIndex].id != "" && itemSlots[itemSlotIndex].id != cursorItemId){
+            if (itemInSlot.id != "" && itemInSlot.id != cursorItemId){
                 //cursor has item, item bar has item, swap their contents
                 swapItemBarWithCursor(itemSlotIndex);
                 return;
             }else{
                 //empty slot otherwise
-                setItemBarItem(itemSlotIndex, cursorItemId, cursorAmount);
+                itemSlots.setItemSlot(itemSlotIndex, cursorItemId, cursorAmount);
                 itemSlot.removeClass("hover");
                 itemCursor.clearItem();
                 return;
@@ -237,8 +212,9 @@ function initVis(){
         //anytime an item overlaps an itemslot, do the hover event
         if (itemCursor.isVisible()){
             //check if the cursor overlaps an item slot
-            for (var i = 0 ; i < itemSlotsOverlay.length ; i++){
-                var itemSlot = itemSlotsOverlay[i];
+            var itemSlotsOverlapList = itemSlots.getAllSlotElements();
+            for (var i = 0 ; i < itemSlotsOverlapList.length ; i++){
+                var itemSlot = itemSlotsOverlapList[i];
                 var overlap = pointOverlap(mouseX, mouseY, itemSlot);
                 if (overlap){
                     itemSlot.addClass("hover");
@@ -263,84 +239,12 @@ function initVis(){
     itemCursor.clearItem();
 
 
-    //setup item slots
-    itemSlotsVis = [];
-    $("#item-bar-vis .item-slot").each(function (i, obj){
-        itemSlotsVis.push($(obj));
-    });
 
-    itemSlotsOverlay = [];
-    $("#item-bar-overlay .item-slot-overlay").each(function (i, obj){
-        $(obj).attr("id", "item-slot-overlay-" + i);
-        itemSlotsOverlay.push($(obj));
-        $(obj).on("mouseover", function(e){
-            var itemId = $(obj).attr("item-id");
-            if (itemId != "" && itemId != undefined) {
-                setItemInfo(itemId);
-            }
-        });
-
-        $(obj).on("mouseleave", function(e){
-            clearItemInfo();
-        });
-    });
-
-    //inventory close event
-    $("#inventory-background").on("click", closeInventory);
-
-}
-
-
-
-function setItemBarItem(index, itemId, amount){
-
-    //update the item bar variable
-    var recipe = recipes[itemId];
-    var imgSrc = itemIconLocation + recipe.id + ".png";
-
-    if (itemSlots[index].id === itemId){
-        //item already exists in the slot, just add to current amount
-        itemSlots[index] = {id: itemId, amount: amount + itemSlots[index].amount };
-    } else{
-        itemSlots[index] = {id: itemId, amount: amount};
-    }
-
-    //update the view
-    var itemInBar = itemSlots[index];
-
-    //set icon image
-    itemSlotsVis[index].find("img").attr("src", imgSrc);
-    itemSlotsOverlay[index].find("img").attr("src", imgSrc);
-
-    //set id
-    itemSlotsVis[index].attr("item-id", recipe.id);
-    itemSlotsOverlay[index].attr("item-id", recipe.id);
-
-    //set amount, recalcuate textbox positioning
-    itemSlotsVis[index].find("div").text(itemInBar.amount);
-    itemSlotsOverlay[index].find("div").text(itemInBar.amount);
-
-    var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
-    var slotDimensions = itemSlotsVis[index][0].getBoundingClientRect();
-    var textDimensions = itemSlotsVis[index].find("div")[0].getBoundingClientRect();
-    var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
-    var y = slotDimensions.y - slotContainer.y + slotDimensions.height - textDimensions.height- 2;
-
-    itemSlotsVis[index].find("div")
-        .css({
-            left: x,
-            top: y
-        })
-    itemSlotsOverlay[index].find("div")
-        .css({
-            left: x,
-            top: y
-        });
 
 }
 
 function swapItemBarWithCursor(itemBarIndex){
-    var itemInSlot = itemSlots[itemBarIndex];
+    var itemInSlot = itemSlots.getItemInSlot(itemBarIndex);
     var itemInCursor = {
         id:     itemCursor.getItemId(),
         amount: itemCursor.getItemCount()
@@ -348,25 +252,8 @@ function swapItemBarWithCursor(itemBarIndex){
 
     itemCursor.clearItem();
     itemCursor.setItem( itemInSlot.id, itemInSlot.amount);
-    removeItemBarItem(itemBarIndex);
-    setItemBarItem(itemBarIndex, itemInCursor.id, itemInCursor.amount);
-}
-
-function removeItemBarItem(index){
-
-    //remove image
-    itemSlotsVis[index].find("img").attr("src", itemIconLocation + itemBlankImage);
-    itemSlotsOverlay[index].find("img").attr("src", itemIconLocation + itemBlankImage);
-
-    //remove id
-    itemSlotsVis[index].attr("item-id", "");
-    itemSlotsOverlay[index].attr("item-id", "");
-
-    //remove amount
-    itemSlotsVis[index].find("div").text("");
-    itemSlotsOverlay[index].find("div").text("");
-
-    itemSlots[index] = {id: "", amount: 0};
+    itemSlots.clearItemSlot(itemBarIndex);
+    itemSlots.setItemSlot(itemBarIndex, itemInCursor.id, itemInCursor.amount);
 }
 
 
@@ -522,33 +409,11 @@ function clearItemInfo(){
 
 function showInventory(){
     $("#inventory-overlay").show();
-
-    var itemBarVis = $("#item-bar-vis");
-    //reset the item bar's position
-    $("#item-bar-overlay").css({
-        position : "absolute",
-        width: itemBarVis.width(),
-        height: itemBarVis.height(),
-        left: itemBarVis.offset().left,
-        top: itemBarVis.offset().top -16
-    });
 }
 
 function closeInventory(){
     $("#inventory-overlay").hide();
     updateVis();
-}
-
-
-function getItemBarItems(){
-    var itemList = [];
-    for (var i = 0 ; i < itemSlots.length ; i++){
-        if(itemSlots[i].id.length > 0){
-            itemList.push(itemSlots[i]);
-        }
-    }
-
-    return itemList;
 }
 
 
@@ -570,7 +435,7 @@ function updateVis() {
 
 
 	//update recipe data
-    var selectedRecipes = getItemBarItems();
+    var selectedRecipes = itemSlots.getFilledSlots();
     console.log("Loading recipes: ");
     console.log(selectedRecipes);
 	

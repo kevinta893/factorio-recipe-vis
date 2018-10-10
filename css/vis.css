@@ -43,8 +43,11 @@ h1{font-family: sans-serif;}
 }
 
 .item-bar{
-    margin: auto;
-    margin-top: 1em;
+    position: absolute;
+    margin: 0 0 0 0;
+    left: 50%;
+    bottom: 5%;
+    transform: translateX(-50%) translateY(0);
     width: 470px;
     height: 72px;
     background: #CCCCCC;
