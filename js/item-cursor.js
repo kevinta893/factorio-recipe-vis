@@ -6,15 +6,22 @@ var itemBlankImage = "blank.png";
 
 class ItemCursor{
 
-    constructor(itemIconLocation){
+    constructor(parentDiv){
         //fields
         this.itemId = "";
         this.itemCount = 0;
 
         //document layout vars
-        this.cursor = $("#item-cursor");
-        this.cursorImage = $("#item-cursor-icon");
-        this.cursorText = $("#item-cursor-amount");
+        this.cursor = $(parentDiv);
+        d3.select(parentDiv).append("img")
+            .attr("src", "")
+            .attr("class", "item-cursor-icon");
+
+        d3.select(parentDiv).append("div")
+            .attr("class", "item-icon-text cursor-icon-text");
+
+        this.cursorImage = this.cursor.find("img");
+        this.cursorText = this.cursor.find("div");
 
     }
 

@@ -121,7 +121,7 @@ function initVis(){
 
 
     //setup item cursor
-    itemCursor = new ItemCursor();
+    itemCursor = new ItemCursor("#item-cursor");
     //setup cursor events
     itemCursor.element().on("click", function(e){
 
