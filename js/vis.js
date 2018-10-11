@@ -194,7 +194,19 @@ function initVis(){
         }
 
 
-        //case 3, clicking anywhere else clears the cursor
+        //case 3, hovering over the info panel icon
+        var itemInfoIcon = itemInfoPanel.getItemIconElement();
+        var overlap = pointOverlap(mouseX, mouseY, itemInfoIcon);
+        if (overlap) {
+            itemInfoIcon.removeClass("hover");
+
+            itemInfoPanel.showItemInfo(itemCursor.getItemId());
+            itemCursor.clearItem();
+
+            return;
+        }
+
+        //case 4, clicking anywhere else clears the cursor
         itemCursor.clearItem();
         return;
     });
@@ -226,7 +238,7 @@ function initVis(){
 
         //anytime an item overlaps an itemslot, do the hover event
         if (itemCursor.isVisible()){
-            //check if the cursor overlaps an item slot
+            //case 1, overlap with an item slot
             var itemSlotsOverlapList = itemSlots.getAllSlotElements();
             for (var i = 0 ; i < itemSlotsOverlapList.length ; i++){
                 var itemSlot = itemSlotsOverlapList[i];
@@ -239,13 +251,22 @@ function initVis(){
 
 
 
-            //also check if the item hovers itself on the item list
+            //case 2, overlap with itself in the inventory
             var itemOriginal = itemInventory.getItemElement(itemCursor.getItemId()).element;
             var overlap = pointOverlap(mouseX, mouseY, itemOriginal);
             if (overlap){
                 itemOriginal.addClass("hover");
             }else{
                 itemOriginal.removeClass("hover");
+            }
+
+            //case 3, hovering over the info panel icon
+            var itemInfoIcon = itemInfoPanel.getItemIconElement();
+            var overlap = pointOverlap(mouseX, mouseY, itemInfoIcon);
+            if (overlap) {
+                itemInfoIcon.addClass("hover");
+            } else{
+                itemInfoIcon.removeClass("hover");
             }
         }
     });

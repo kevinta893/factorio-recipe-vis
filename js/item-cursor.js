@@ -493,4 +493,8 @@ class ItemInfoPanel{
         this.itemNameText.text("Select an item");
         this.itemWikiLink.removeAttr("href");
     }
+
+    getItemIconElement(){
+        return this.itemImage;
+    }
 }
