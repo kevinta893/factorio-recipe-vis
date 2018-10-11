@@ -486,12 +486,14 @@ class ItemInfoPanel{
         this.itemImage.attr("src", itemIconLocation + itemId + ".png")
         this.itemNameText.text(recipes[itemId].name);
         this.itemWikiLink.attr("href", recipes[itemId].wiki_link);
+        this.itemWikiLink.attr("title", recipes[itemId].wiki_link)
     }
 
     clearItemInfo(){
         this.itemImage.attr("src", itemIconLocation + itemBlankInfoImage)
         this.itemNameText.text("Select an item");
         this.itemWikiLink.removeAttr("href");
+        this.itemWikiLink.removeAttr("title")
     }
 
     getItemIconElement(){
