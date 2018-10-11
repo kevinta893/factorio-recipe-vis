@@ -319,7 +319,7 @@ class ItemInventory{
         //setup category heading
         categoryRoot.append("img")
             .attr("src", function(d){
-                return itemCategoryIconLocation + "/" + d.img;
+                return itemCategoryIconLocation + d.img;
             });
 
 
@@ -358,7 +358,7 @@ class ItemInventory{
             })
             .append("img")
             .attr("src", function(d){
-                return itemIconLocation + "/" + d + ".png";
+                return itemIconLocation + d + ".png";
             });
 
 
