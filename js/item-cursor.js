@@ -100,6 +100,8 @@ class ItemBar{
      */
     constructor(parentDiv, maxItems, initialItems){
 
+        this.parentElement = $(parentDiv);
+
         //setup slots model
         this.itemSlots = [];
         for (var i = 0; i < maxItems; i++){
@@ -114,7 +116,7 @@ class ItemBar{
 
 
         //setup the visualization
-        $(parentDiv).attr("class", "item-bar");
+        this.parentElement.attr("class", "item-bar");
 
         var itemSlotsElement = d3.select(parentDiv).append("div")
             .attr("class", "item-slot-container")
@@ -147,7 +149,7 @@ class ItemBar{
 
         //add all the html elements for the slots
         var slotElements = [];
-        $(parentDiv).find(".item-slot").each(function(){
+        this.parentElement.find(".item-slot").each(function(){
             slotElements.push($(this));
         });
 
@@ -178,15 +180,14 @@ class ItemBar{
         slotElement.attr("item-id", itemId);
         slotElement.find("div").text(amount);
 
-        slotElement.find("div").text(amount);
 
         //set amount, recalcuate textbox positioning
-        var slotContainer = $("#item-bar-vis .item-slot-container")[0].getBoundingClientRect();
+        var itemBarContainer = this.parentElement.find(".item-slot-container")[0].getBoundingClientRect();
         //var referenceSlot = this.itemSlots[0].element[0].getBoundingClientRect();
         var slotDimensions = this.itemSlots[index].element[0].getBoundingClientRect();
         var textDimensions = slotElement.find("div")[0].getBoundingClientRect();
-        var x = slotDimensions.x - slotContainer.x + slotDimensions.width - textDimensions.width - 5;
-        var y = slotDimensions.y - slotContainer.y + slotDimensions.height - textDimensions.height- 2;
+        var x = slotDimensions.x - itemBarContainer.x + slotDimensions.width - textDimensions.width - 5;
+        var y = slotDimensions.y - itemBarContainer.y + slotDimensions.height - textDimensions.height- 2;
 
         slotElement.find("div")
             .css({
