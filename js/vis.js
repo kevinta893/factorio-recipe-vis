@@ -28,6 +28,7 @@ var initItemSlots = [{id: "electronic-circuit", amount: 1},{id: "iron-gear-wheel
 var itemSlots;
 var itemCursor;
 var itemInventory;
+var itemInfoPanel;
 
 //keyboard hold downs
 var isKeyDown = {};
@@ -281,13 +282,17 @@ function initVis(){
         element.on("mouseover", function(e){
             //hover, activate info panel
             var itemId = $(this).attr("item-id");
-            setItemInfo(itemId);
+            itemInfoPanel.showItemInfo(itemId);
         });
         element.on("mouseleave", function(e){
             //hover, activate info panel
-            clearItemInfo();
+            itemInfoPanel.clearItemInfo();
         });
     }
+
+
+    //initialize the item information panel
+    itemInfoPanel = new ItemInfoPanel("#item-info");
 
 }
 
@@ -305,20 +310,6 @@ function swapItemBarWithCursor(itemBarIndex){
 }
 
 
-
-function setItemInfo(itemId){
-    var recipe = recipes[itemId];
-
-    $("#info-item-name").text(recipe.name);
-    $("#info-item-img").attr("src", itemIconLocation + "/" + recipe.id + ".png");
-    $("#info-item-wiki").attr("href", recipe.wiki_link);
-}
-
-function clearItemInfo(){
-    $("#info-item-name").text("Select an item");
-    $("#info-item-img").attr("src", itemIconLocation + "/" + "null" + ".png");
-    $("#info-item-wiki").removeAttr("href");
-}
 
 function showInventory(){
     $("#inventory-overlay").show();
@@ -512,6 +503,8 @@ function getControls(){
     reverseTree = $("#reverse").is(":checked");
     spread = $("#spread").is(":checked");
     showOres = $("#show-ores").is(":checked");
+
+
 }
 
 //logs chart error events

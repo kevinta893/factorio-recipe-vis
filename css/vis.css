@@ -278,7 +278,7 @@ h1{font-family: sans-serif;}
     margin-left: 2em;
 }
 
-#info-item-img{
+.info-item-img{
     position: relative;
     width: 45px;
     height: 45px;
@@ -291,16 +291,17 @@ h1{font-family: sans-serif;}
     margin: 1px;
 }
 
-#info-item-img > img{
+.info-item-img > img{
     width: 45px;
     height: 45px;
     object-fit: cover;
 }
 
-#info-item-name{
+.info-item-name{
     float: right;
     font-size: 1.5em;
     margin-left: 0.5em;
     font-family: sans-serif;
 }
 
+.item-info-wiki-link{}

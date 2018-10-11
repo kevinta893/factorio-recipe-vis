@@ -1,12 +1,14 @@
 var itemCategoryIconLocation = "./images/category/";
 var itemIconLocation = "./images/";
 var itemBlankImage = "blank.png";
-
+var itemBlankInfoImage = "blank_question.png"
 
 
 class ItemCursor{
 
     constructor(parentDiv){
+        this.parentElement = $(parentDiv);
+
         //fields
         this.itemId = "";
         this.itemCount = 0;
@@ -249,7 +251,7 @@ class ItemBar{
 class ItemInventory{
 
     constructor(parentDiv){
-        this.parentDiv = parentDiv;
+        this.parentElement = $(parentDiv);
 
         //rows of items
         var logistics = [
@@ -448,5 +450,47 @@ class ItemInventory{
         }
 
         this.categoryElements[categoryIndex].element.show();
+    }
+}
+
+
+
+class ItemInfoPanel{
+
+    constructor(parentDiv){
+        this.parentElement = $(parentDiv);
+
+
+        //add header
+        var headerContainer = d3.select(parentDiv).append("div");
+        headerContainer.append("img")
+            .attr("src", itemIconLocation + itemBlankInfoImage)
+            .attr("class", "info-item-img");
+        headerContainer.append("div")
+            .text("Select an item")
+            .attr("class", "info-item-name");
+
+        //add wiki link
+        d3.select(parentDiv).append("a")
+            .attr("target", "_blank")
+            .attr("class", "item-info-wiki-link")
+            .text("\u{1f517}Item Wiki");
+
+
+        this.itemImage = this.parentElement.find("div").find("img");
+        this.itemNameText = this.parentElement.find("div").find("div");
+        this.itemWikiLink = this.parentElement.find(".item-info-wiki-link");
+    }
+
+    showItemInfo(itemId){
+        this.itemImage.attr("src", itemIconLocation + itemId + ".png")
+        this.itemNameText.text(recipes[itemId].name);
+        this.itemWikiLink.attr("href", recipes[itemId].wiki_link);
+    }
+
+    clearItemInfo(){
+        this.itemImage.attr("src", itemIconLocation + itemBlankInfoImage)
+        this.itemNameText.text("Select an item");
+        this.itemWikiLink.removeAttr("href");
     }
 }
