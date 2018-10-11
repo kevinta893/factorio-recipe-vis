@@ -58,14 +58,17 @@ function initVis(){
     document.onkeydown = keyDown_Event;
     document.onkeyup = keyUp_Event;
 
-    //setup click events
+    //setup click events for visualization controls
     d3.select("#reverse").on("click", updateVis);
     d3.select("#spread").on("click", updateVis);
     d3.select("#reset").on("click", updateVis)
     d3.select("#show-ores").on("click", updateVis);
 
 
-    //initalize the item bar on vis
+    //inventory close event
+    $("#inventory-background").on("click", closeInventory);
+
+    //initalize the item bar
     itemSlots = new ItemBar("#item-bar-vis", 10, initItemSlots);
 
     //add initial items to the item bar
@@ -90,12 +93,6 @@ function initVis(){
             }
         });
     }
-
-
-    //inventory close event
-    $("#inventory-background").on("click", closeInventory);
-
-
 
 
     //setup item cursor
@@ -326,6 +323,7 @@ function loadRecipes(){
         updateVis();
     });
 }
+
 
 function swapItemBarWithCursor(itemBarIndex){
     var itemInSlot = itemSlots.getItemInSlot(itemBarIndex);
