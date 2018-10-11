@@ -50,34 +50,8 @@ initVis();
 
 function initVis(){
 
-    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
-        if (err != "success"){
-            console.log("Error cannot load json\n" + err);
-            return;
-        }
 
-        //parse the list into a hashmap
-        var rawList = json;
-        recipes = {};
-        for (var i = 0 ; i < rawList.length ; i++){
-            var recipe = rawList[i];
-            recipes[recipe.id] = recipe;
-        }
-
-        selectedRecipes = Object.keys(recipes);
-        shuffle(selectedRecipes);
-        selectedRecipes = selectedRecipes.slice(0,4);
-
-        //setup item bar with the initial items
-        for (var i = 0 ; i < initItemSlots.length ; i++){
-            if (initItemSlots[i].id != ""){
-                itemSlots.setItemSlot(i, initItemSlots[i].id, 1);
-            }
-        }
-
-        console.log("Recipes database loaded");
-        updateVis();
-    });
+    loadRecipes();
 
 
     //setup key events
@@ -319,6 +293,38 @@ function initVis(){
     //initialize the item information panel
     itemInfoPanel = new ItemInfoPanel("#item-info");
 
+}
+
+//loads recipes asynchronously
+function loadRecipes(){
+    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
+        if (err != "success"){
+            console.log("Error cannot load json\n" + err);
+            return;
+        }
+
+        //parse the list into a hashmap
+        var rawList = json;
+        recipes = {};
+        for (var i = 0 ; i < rawList.length ; i++){
+            var recipe = rawList[i];
+            recipes[recipe.id] = recipe;
+        }
+
+        selectedRecipes = Object.keys(recipes);
+        shuffle(selectedRecipes);
+        selectedRecipes = selectedRecipes.slice(0,4);
+
+        //setup item bar with the initial items
+        for (var i = 0 ; i < initItemSlots.length ; i++){
+            if (initItemSlots[i].id != ""){
+                itemSlots.setItemSlot(i, initItemSlots[i].id, 1);
+            }
+        }
+
+        console.log("Recipes database loaded");
+        updateVis();
+    });
 }
 
 function swapItemBarWithCursor(itemBarIndex){
