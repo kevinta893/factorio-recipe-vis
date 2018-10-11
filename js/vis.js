@@ -5,7 +5,6 @@
 
 
 var chart = null;
-timer = null;
 
 //Visualization Config
 var nodeWidth = 40;
