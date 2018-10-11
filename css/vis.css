@@ -165,6 +165,7 @@ h1{font-family: sans-serif;}
     border-bottom: 1px solid #2A2A2A;
     background-color: #7b7b7b;
     margin: 1px;
+    cursor: pointer;
 
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -174,10 +175,12 @@ h1{font-family: sans-serif;}
     user-select: none;
 }
 
-.category-button:hover{ /* This hover is programmatic */
+.category-button:hover{
     background-color: #ff7f00;
 }
-
+.category-button.selected{ /* This hover is programmatic */
+    background-color: #ffcda5;
+}
 
 .item{
     position: relative;

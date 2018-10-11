@@ -409,7 +409,7 @@ class ItemInventory{
 
 
 
-        //setup events for the category buttons
+        //setup events for the category buttons. Click event
         var categoryButtons = this.getAllCategoryButtonElements();
         var categories = this.getAllCategoryElements();
         for (var i = 0 ; i < categoryButtons.length ; i++){
@@ -419,8 +419,14 @@ class ItemInventory{
                 categories.forEach(function (c){
                     c.element.hide();
                 });
+                categoryButtons.forEach(function (c){
+                    c.element.removeClass("selected");
+                });
+
 
                 categories[categoryIndex].element.show();
+                categoryButtons[categoryIndex].element.addClass("selected");
+
             });
         }
     }
@@ -447,9 +453,11 @@ class ItemInventory{
     showCategory(categoryIndex){
         for (var i =0 ; i < this.categoryElements.length ; i++){
             this.categoryElements[i].element.hide();
+            this.categoryButtonElements[i].element.removeClass("selected");
         }
 
         this.categoryElements[categoryIndex].element.show();
+        this.categoryButtonElements[categoryIndex].element.addClass("selected");
     }
 }
 
