@@ -1,0 +1,316 @@
+body {
+    width: 960px;
+    height: 100%;
+    margin: auto;
+}
+h1{font-family: sans-serif;}
+
+#chart {
+    width: 960px;
+    height: calc(100% - 275px);
+    min-width: 800px;
+    min-height: 200px;
+    clear: both;
+	background-color: #F1F1F1
+}
+
+.node rect {
+    fill-opacity: .9;
+    shape-rendering: crispEdges;
+}
+
+.link {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .2;
+}
+
+.control               { float: left; padding-left: 2em; margin-bottom: 1em;}
+.control label         { display: block; text-align: center;}
+.control input         { width: 2.5em; }
+.control button        { border: outset 2px; }
+.control button:active { border: inset 2px; }
+
+
+#events {
+    height: 15ex;
+    overflow-y: scroll;
+    color: #444;
+    font-family: monospace;
+    border: 1px solid #eee;
+}
+
+#events span:first-child {
+    width: 10em;
+    display: inline-block;
+}
+
+.item-bar{
+    position: absolute;
+    margin: 0 0 0 0;
+    left: 50%;
+    bottom: 5%;
+    transform: translateX(-50%) translateY(0);
+    width: 470px;
+    height: 72px;
+    background: #CCCCCC;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    z-index: 600;
+}
+.item-slot-container{
+    margin-left: 12px;
+    margin-top: 12px;
+    position: relative;
+}
+.item-bar svg{width: 100%; height: 100%}
+
+
+.item-slot{
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
+}
+
+.item-slot img{
+    position: relative;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.item-slot:hover{
+    background-color: #ff7f00;
+}
+.item-slot.hover{ /* This hover is programmatic */
+    background-color: #ff7f00;
+}
+.item-slot{
+    cursor: pointer;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+.item-slot.hover{ /* This hover is programmatic */
+    background-color: #ff7f00;
+}
+
+
+
+#inventory-overlay{
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+}
+
+#inventory-window{
+    width: 960px;
+    height: 500px;
+    margin: auto;
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%,50%);
+    position: absolute;
+    background-color: #CCCCCC;
+    z-index: 1000;
+}
+
+#inventory{
+    float: left;
+    padding-left: 2em;
+    padding-top: 2em;
+}
+
+.category-items{
+    width: 28em;
+    padding-top: 2em;
+
+}
+
+#inventory-background{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+    cursor: pointer;
+}
+
+.category-button{
+    position: relative;
+    display: inline-block;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
+    cursor: pointer;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.category-button:hover{
+    background-color: #ff7f00;
+}
+.category-button.selected{ /* This hover is programmatic */
+    background-color: #ffcda5;
+}
+
+.item{
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.item.hover{
+    background-color: #ff7f00;
+}
+.item:hover{
+    background-color: #ff7f00;
+}
+
+.item-icon-text{
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    fill: #FFFFFF;
+    color: #FFFFFF;
+
+    font-size: larger;
+    font-weight: bold;
+    font-family: sans-serif;
+
+    text-anchor: end;
+    text-shadow:
+            0px 1px 1px #000,
+            0px -1px 1px #000,
+            1px 0px 1px #000,
+            -1px 0px 1px #000;
+}
+
+.cursor-icon-text{
+    position: absolute;
+    bottom: -3px;
+    right: 2px;
+
+}
+
+.item-bar-icon-text{
+    position: absolute;
+    text-align: end;
+}
+
+
+
+#item-cursor{
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    display: none;
+    z-index: 100000;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+#item-cursor-amount{
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+}
+
+
+
+#item-info {
+    position: relative;
+    float: left;
+    margin-top: 2em;
+    margin-left: 2em;
+}
+
+.info-item-img{
+    position: relative;
+    width: 45px;
+    height: 45px;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #2A2A2A;
+    border-bottom: 1px solid #2A2A2A;
+    background-color: #7b7b7b;
+    margin: 1px;
+}
+
+.info-item-img > img{
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+}
+
+.info-item-img.hover{
+    background-color: #ff7f00;
+}
+
+.info-item-name{
+    float: right;
+    font-size: 1.5em;
+    margin-left: 0.5em;
+    font-family: sans-serif;
+}
+
+.item-info-wiki-link{}
