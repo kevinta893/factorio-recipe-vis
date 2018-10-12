@@ -24,9 +24,9 @@ var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g
 
 //item bar initial config
 var initItemSlots = [
-    {id: "electronic-circuit", amount: 1},
-    {id: "iron-gear-wheel", amount: 1},
-    {id: "assembling-machine-1", amount: 1}];
+    {id: "electric-mining-drill", amount: 1},
+    {id: "boiler", amount: 1},
+    {id: "steel-furnace", amount: 1}];
 
 //layout elements
 var itemBar;
