@@ -361,7 +361,14 @@ function closeInventory(){
     updateVis();
 }
 
-
+function toggleInventory(){
+    var inventoryOverlay = $("#inventory-overlay");
+    if (inventoryOverlay.is(":visible")){
+        closeInventory();
+    }else{
+        showInventory();
+    }
+}
 
 // Updates the visualization parameters and redraws the vis
 function updateVis() {
@@ -749,4 +756,8 @@ function keyDown_Event(e){
 
 function keyUp_Event(e){
     isKeyDown[e.key] = false;
+
+    if(e.key == "e"){
+        toggleInventory();
+    }
 }
