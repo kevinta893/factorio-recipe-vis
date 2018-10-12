@@ -16,9 +16,8 @@ var reverseTree = false;
 var showOres = false;
 var stopItems = [				// items to stop recursing at to avoid redundant paths (e.g. iron-plate -> iron-ore)
 	"iron-plate",
-	"iron-gear-wheel",
 	"copper-plate",
-	"steel-plate"
+    "stone-brick"
 ];
 
 
