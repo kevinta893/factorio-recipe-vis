@@ -20,7 +20,8 @@ Other controls for the visualization:
 
 You can also organize the nodes on the visualization by dragging them into different columns.
 
-
+### Limitations
+I do want to acknowledge that by using the visualization can lead to factories looking like well-organized trees. While personally I like building neat tree style production lines, I still find creative value in developing complex factories. They help you make progress in the game to get access to better equipment and research. It is very challenging to build great factory in your first few runs. My suggestion is to perhaps use this tool to help build small modular factories that are good at producing one particular item and not as a complete walkthrough for how to layout your factory.
 
 ## Libraries Used
 
