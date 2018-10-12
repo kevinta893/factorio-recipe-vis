@@ -29,7 +29,7 @@ var initItemSlots = [
     {id: "assembling-machine-1", amount: 1}];
 
 //layout elements
-var itemSlots;
+var itemBar;
 var itemCursor;
 var itemInventory;
 var itemInfoPanel;
@@ -69,27 +69,27 @@ function initVis(){
     $("#inventory-background").on("click", closeInventory);
 
     //initalize the item bar
-    itemSlots = new ItemBar("#item-bar-vis", 10, initItemSlots);
+    itemBar = new ItemBar("#item-bar-vis", 10, initItemSlots);
 
     //add initial items to the item bar
     for (var i = 0; i < initItemSlots.length; i++){
         var initItem = initItemSlots[i];
-        itemSlots.setItemSlot(i, initItem.id, initItem.amount);
+        itemBar.setItemSlot(i, initItem.id, initItem.amount);
     }
 
     //setup the click event for all slot elements
-    var itemSlotElements = itemSlots.getAllSlots();
+    var itemSlotElements = itemBar.getAllSlots();
     for (var i = 0 ; i < itemSlotElements.length ; i++ ) {
         itemSlotElements[i].element.on("click", function (e) {
             showInventory();
             var itemSlotIndex = parseInt($(this).attr("index"));
-            var slotItem = itemSlots.getItemInSlot(itemSlotIndex);
+            var slotItem = itemBar.getItemInSlot(itemSlotIndex);
 
             if (slotItem.id != "" && slotItem.id.length > 0) {
                 //there's an item in the slot, add to cursor
                 var itemAmount = slotItem.amount;
                 itemCursor.setItem(slotItem.id, slotItem.amount);
-                itemSlots.clearItemSlot(itemSlotIndex);
+                itemBar.clearItemSlot(itemSlotIndex);
             }
         });
     }
@@ -111,7 +111,7 @@ function initVis(){
         //case 1, hovering over an item bar item slot
         //find the overlapping slot in the item bar
         var slotOverlapped;
-        var itemSlotsOverlapList = itemSlots.getAllSlotElements();
+        var itemSlotsOverlapList = itemBar.getAllSlotElements();
         for (var i = 0 ; i < itemSlotsOverlapList.length ; i++){
             var itemSlot = itemSlotsOverlapList[i];
             if (pointOverlap(mouseX, mouseY, itemSlot)){
@@ -126,7 +126,7 @@ function initVis(){
             var cursorItemId = itemCursor.getItemId();
             var cursorAmount = itemCursor.getItemCount();
             var itemSlotIndex = parseInt(slotOverlapped.attr("index"));
-            var itemInSlot = itemSlots.getItemInSlot(itemSlotIndex);
+            var itemInSlot = itemBar.getItemInSlot(itemSlotIndex);
 
             if (itemInSlot.id != "" && itemInSlot.id != cursorItemId){
                 //cursor has item, item bar has item, swap their contents
@@ -134,12 +134,12 @@ function initVis(){
                 return;
             } else if (itemInSlot.id == cursorItemId){
                 //cursor and item slot are both the same item, add together the amounts, clear cursor
-                itemSlots.setItemSlot(itemSlotIndex, itemInSlot.id, itemInSlot.amount + cursorAmount);
+                itemBar.setItemSlot(itemSlotIndex, itemInSlot.id, itemInSlot.amount + cursorAmount);
                 itemCursor.clearItem();
                 return;
             } else{
                 //empty slot otherwise
-                itemSlots.setItemSlot(itemSlotIndex, cursorItemId, cursorAmount);
+                itemBar.setItemSlot(itemSlotIndex, cursorItemId, cursorAmount);
                 itemCursor.clearItem();
                 itemSlot.removeClass("hover");
                 return;
@@ -210,7 +210,7 @@ function initVis(){
         //anytime an item overlaps an itemslot, do the hover event
         if (itemCursor.isVisible()){
             //case 1, overlap with an item slot
-            var itemSlotsOverlapList = itemSlots.getAllSlotElements();
+            var itemSlotsOverlapList = itemBar.getAllSlotElements();
             for (var i = 0 ; i < itemSlotsOverlapList.length ; i++){
                 var itemSlot = itemSlotsOverlapList[i];
                 if (pointOverlap(mouseX, mouseY, itemSlot)){
@@ -327,7 +327,7 @@ function loadRecipes(){
         //setup item bar with the initial items
         for (var i = 0 ; i < initItemSlots.length ; i++){
             if (initItemSlots[i].id != ""){
-                itemSlots.setItemSlot(i, initItemSlots[i].id, 1);
+                itemBar.setItemSlot(i, initItemSlots[i].id, 1);
             }
         }
 
@@ -338,7 +338,7 @@ function loadRecipes(){
 
 
 function swapItemBarWithCursor(itemBarIndex){
-    var itemInSlot = itemSlots.getItemInSlot(itemBarIndex);
+    var itemInSlot = itemBar.getItemInSlot(itemBarIndex);
     var itemInCursor = {
         id:     itemCursor.getItemId(),
         amount: itemCursor.getItemCount()
@@ -346,8 +346,8 @@ function swapItemBarWithCursor(itemBarIndex){
 
     itemCursor.clearItem();
     itemCursor.setItem( itemInSlot.id, itemInSlot.amount);
-    itemSlots.clearItemSlot(itemBarIndex);
-    itemSlots.setItemSlot(itemBarIndex, itemInCursor.id, itemInCursor.amount);
+    itemBar.clearItemSlot(itemBarIndex);
+    itemBar.setItemSlot(itemBarIndex, itemInCursor.id, itemInCursor.amount);
 }
 
 
@@ -379,7 +379,7 @@ function updateVis() {
 
 
 	//update recipe data
-    var selectedRecipes = itemSlots.getFilledSlots();
+    var selectedRecipes = itemBar.getFilledSlots();
     console.log("Loading recipes: ");
     console.log(selectedRecipes);
 	
