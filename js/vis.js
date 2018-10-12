@@ -45,13 +45,12 @@ var nodeSnapWidth = -1;
 var recipes;
 
 
-initVis();
+loadRecipes();
 
 
 function initVis(){
 
 
-    loadRecipes();
 
 
     //setup key events
@@ -92,6 +91,18 @@ function initVis(){
                 itemBar.clearItemSlot(itemSlotIndex);
             }
         });
+    }
+
+
+    selectedRecipes = Object.keys(recipes);
+    shuffle(selectedRecipes);
+    selectedRecipes = selectedRecipes.slice(0,4);
+
+    //setup item bar with the initial items
+    for (var i = 0 ; i < initItemSlots.length ; i++){
+        if (initItemSlots[i].id != ""){
+            itemBar.setItemSlot(i, initItemSlots[i].id, 1);
+        }
     }
 
 
@@ -302,13 +313,18 @@ function initVis(){
 
     });
 
+
+    //update the vis when done
+    updateVis();
+
+
 }
 
-//loads recipes asynchronously
+//loads recipes asynchronously. When done, initializes the vis
 function loadRecipes(){
     $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
         if (err != "success"){
-            console.log("Error cannot load json\n" + err);
+            console.log("Error cannot load recipe json. Refresh the page and check internet connection.\n" + err);
             return;
         }
 
@@ -320,19 +336,8 @@ function loadRecipes(){
             recipes[recipe.id] = recipe;
         }
 
-        selectedRecipes = Object.keys(recipes);
-        shuffle(selectedRecipes);
-        selectedRecipes = selectedRecipes.slice(0,4);
-
-        //setup item bar with the initial items
-        for (var i = 0 ; i < initItemSlots.length ; i++){
-            if (initItemSlots[i].id != ""){
-                itemBar.setItemSlot(i, initItemSlots[i].id, 1);
-            }
-        }
-
         console.log("Recipes database loaded");
-        updateVis();
+        initVis();
     });
 }
 

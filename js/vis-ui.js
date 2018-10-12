@@ -180,6 +180,7 @@ class ItemBar{
 
         slotElement.find("img").attr("src", imgSrc);
         slotElement.attr("item-id", itemId);
+        slotElement.attr("title", recipes[itemId].name);
         slotElement.find("div").text(amount);
 
 
@@ -210,6 +211,7 @@ class ItemBar{
 
         slotElement.find("img").attr("src", itemIconLocation + itemBlankImage);
         slotElement.attr("item-id", "");
+        slotElement.attr("title", "");
         slotElement.find("div").text("");
 
     }
@@ -352,14 +354,17 @@ class ItemInventory{
             })
             .enter()
             .append("div")
-            .attr("class", "item")
-            .attr("item-id", function(d){
-                return d;
-            })
-            .append("img")
-            .attr("src", function(d){
-                return itemIconLocation + d + ".png";
-            });
+                .attr("class", "item")
+                .attr("item-id", function(d){
+                    return d;
+                })
+                .attr("title", function(d){
+                    return recipes[d].name;
+                })
+                .append("img")
+                    .attr("src", function(d){
+                        return itemIconLocation + d + ".png";
+                    });
 
 
         //collect all the items
