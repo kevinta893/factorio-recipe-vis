@@ -185,7 +185,7 @@ class ItemBar{
 
         //set amount, recalcuate textbox positioning
         var itemBarContainer = this.parentElement.find(".item-slot-container")[0].getBoundingClientRect();
-        //var referenceSlot = this.itemSlots[0].element[0].getBoundingClientRect();
+        //var referenceSlot = this.itemBar[0].element[0].getBoundingClientRect();
         var slotDimensions = this.itemSlots[index].element[0].getBoundingClientRect();
         var textDimensions = slotElement.find("div")[0].getBoundingClientRect();
         var x = slotDimensions.x - itemBarContainer.x + slotDimensions.width - textDimensions.width - 5;
@@ -234,8 +234,8 @@ class ItemBar{
     }
 
     getMaxItems(){ return this.itemSlots.length; }
-    parentElement(){ return this.itemSlots}
-    slotElement(index){ return this.itemSlots}
+    getParentElement(){ return this.parentElement; }
+    slotElement(index){ return this.itemSlots[i].element;}
     getAllSlotElements(){
         var ret = [];
         for (var i = 0; i < this.itemSlots.length; i++){
