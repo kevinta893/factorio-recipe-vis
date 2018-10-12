@@ -290,6 +290,18 @@ function initVis(){
     //initialize the item information panel
     itemInfoPanel = new ItemInfoPanel("#item-info");
 
+
+    //event for resizing window from: https://css-tricks.com/snippets/jquery/done-resizing-event/
+    var resizeTimer;
+    $(window).on('resize', function(e) {
+
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            updateVis();
+        }, 100);
+
+    });
+
 }
 
 //loads recipes asynchronously
@@ -357,14 +369,13 @@ function updateVis() {
     //fetch UI data
     getControls();
 
-    //update the sankey type
+    //update the sankey type chart
     d3.select("#chart svg").remove();
     chart = d3.select("#chart").append("svg").chart(chartType);
     ["click", "mouseover", "mouseout"].forEach(function(evt) {
         chart.on("node:"+evt, function(node) { logEvent("node:"+evt, node.name); });
         chart.on("link:"+evt, function(link) { logEvent("link:"+evt, link.source.name+" → "+link.target.name); });
     });
-
 
 
 	//update recipe data

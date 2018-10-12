@@ -1,12 +1,15 @@
 body {
     width: 960px;
+    height: 100%;
     margin: auto;
 }
 h1{font-family: sans-serif;}
 
 #chart {
     width: 960px;
-    height: 70%;
+    height: calc(100% - 275px);
+    min-width: 800px;
+    min-height: 200px;
     clear: both;
 	background-color: #F1F1F1
 }
