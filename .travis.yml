@@ -1,0 +1,31 @@
+language: node_js       #javascript
+node_js:
+  - stable
+
+env:
+  - DEPLOY_FOLDER=deploy
+ 
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN 
+  local-dir: $DEPLOY_FOLDER
+  keep-history: true
+  on:
+    branch: master
+
+cache:
+  directories:
+    - node_modules
+    
+script:
+  - echo "Tests to be here"
+  
+after_success:
+  - mkdir $DEPLOY_FOLDER
+  - cp LICENSE $DEPLOY_FOLDER
+  - cp README.md $DEPLOY_FOLDER
+  - cp index.html $DEPLOY_FOLDER
+  - cp -R css $DEPLOY_FOLDER
+  - cp -R js $DEPLOY_FOLDER
+  - cp -R images $DEPLOY_FOLDER
