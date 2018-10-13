@@ -316,6 +316,9 @@ class ItemInventory{
             })
             .attr("category-index", function(d, i){
                 return i;
+            })
+            .attr("title", function(d, i){
+                return inventoryCategories[i].name;
             });
 
         //setup category heading
