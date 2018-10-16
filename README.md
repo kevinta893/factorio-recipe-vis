@@ -1,6 +1,6 @@
 # factorio-recipe-vis
-[![Build Status](https://travis-ci.org/kevinta893/factorio-recipe-vis.svg?branch=master)](https://travis-ci.org/kevinta893/factorio-recipe-vis.svg?branch=master)
-[![license](https://img.shields.io/badge/license-MIT-green.svg)]()
+[![Build Status](https://travis-ci.org/kevinta893/factorio-recipe-vis.svg?branch=master)](https://travis-ci.org/kevinta893/factorio-recipes-json)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/kevinta893/factorio-recipe-vis/blob/master/LICENSE)
 
 A visualization of recipes in Factorio using D3.js. It is meant to help visualize the item dependancies of the game's recipes to help organize your factory. Of course, this repository has automated build, test, and deployment in honour of Factorio's gameplay style. 😄
 
