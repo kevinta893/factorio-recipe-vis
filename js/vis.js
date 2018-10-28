@@ -46,7 +46,30 @@ var recipes;
 
 loadRecipes();
 
+//loads recipes asynchronously. When done, initializes the vis
+function loadRecipes(){
+    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
+        if (err != "success"){
+            console.log("Error cannot load recipe json. Refresh the page and check internet connection.\n" + err);
+            return;
+        }
 
+        //parse the list into a hashmap
+        var rawList = json;
+        recipes = {};
+        for (var i = 0 ; i < rawList.length ; i++){
+            var recipe = rawList[i];
+            recipes[recipe.id] = recipe;
+        }
+
+        console.log("Recipes database loaded");
+        initVis();
+    });
+}
+
+
+
+//initialize the UI of the visualization
 function initVis(){
 
 
@@ -317,27 +340,6 @@ function initVis(){
     updateVis();
 
 
-}
-
-//loads recipes asynchronously. When done, initializes the vis
-function loadRecipes(){
-    $.getJSON("https://kevinta893.github.io/factorio-recipes-json/recipes.min.json", function (json, err){
-        if (err != "success"){
-            console.log("Error cannot load recipe json. Refresh the page and check internet connection.\n" + err);
-            return;
-        }
-
-        //parse the list into a hashmap
-        var rawList = json;
-        recipes = {};
-        for (var i = 0 ; i < rawList.length ; i++){
-            var recipe = rawList[i];
-            recipes[recipe.id] = recipe;
-        }
-
-        console.log("Recipes database loaded");
-        initVis();
-    });
 }
 
 

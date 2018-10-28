@@ -262,7 +262,7 @@ class ItemInventory{
             ["burner-inserter","inserter","long-handed-inserter","fast-inserter","filter-inserter","stack-inserter","stack-filter-inserter"],
             ["small-electric-pole","medium-electric-pole","big-electric-pole","substation","pipe","pipe-to-ground","pump"],
             ["rail","train-stop","rail-signal","rail-chain-signal","locomotive","cargo-wagon","fluid-wagon","artillery-wagon","car","tank"],
-            ["logistic-robot","construction-robot","active-provider-chest","passive-provider-chest","storage-chest","buffer-chest","requester-chest","roboport"],
+            ["logistic-robot","construction-robot","logistic-chest-active-provider","logistic-chest-passive-provider","logistic-chest-storage","logistic-chest-buffer","logistic-chest-requester","roboport"],
             ["lamp","red-wire","green-wire","arithmetic-combinator","decider-combinator","constant-combinator","power-switch","programmable-speaker"],
             ["stone-brick","concrete","hazard-concrete","refined-concrete","refined-hazard-concrete","landfill","cliff-explosives"]
         ];
@@ -272,7 +272,7 @@ class ItemInventory{
             ["burner-mining-drill","electric-mining-drill","offshore-pump","pumpjack"],
             ["stone-furnace","steel-furnace","electric-furnace"],
             ["assembling-machine-1","assembling-machine-2","assembling-machine-3","oil-refinery","chemical-plant","centrifuge","lab"],
-            ["beacon","speed-module","speed-module-2","speed-module-3","efficiency-module","efficiency-module-2","efficiency-module-3","productivity-module","productivity-module-2","productivity-module-3"],
+            ["beacon","speed-module","speed-module-2","speed-module-3","effectivity-module","effectivity-module-2","effectivity-module-3","productivity-module","productivity-module-2","productivity-module-3"],
 
         ];
         var intermediateProducts = [
