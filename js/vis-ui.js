@@ -484,25 +484,79 @@ class ItemInfoPanel{
             .attr("class", "info-item-img");
         headerContainer.append("div")
             .text("Select an item")
-            .attr("class", "info-item-name");
+            .attr("class", "info-item-name")
+			.attr("id", "item-info-name-text");
 
-        //add wiki link
+		//time header
+		var timeDiv = d3.select(parentDiv).append("div")
+			.attr("class", "item-info-box");
+		timeDiv.append("strong")
+			.attr("class", "item-info-header")
+			.text("Time");
+		timeDiv.append("div")
+			.attr("class", "item-info-data")
+			.attr("id", "item-info-time-text")
+			.text("");
+			
+		//yield header
+		var yieldDiv = d3.select(parentDiv).append("div")
+			.attr("class", "item-info-header");
+		yieldDiv.append("strong")
+			.attr("class", "item-info-header")
+			.text("Yield");
+		yieldDiv.append("div")
+			.attr("class", "item-info-data")
+			.attr("id", "item-info-yield-text")
+			.text("");
+		
+		//category header
+		var categoryDiv = d3.select(parentDiv).append("div")
+			.attr("class", "item-info-header");
+		categoryDiv.append("strong")
+			.attr("class", "item-info-header")
+			.text("Category");
+		categoryDiv.append("div")
+			.attr("class", "item-info-data")
+			.attr("id", "item-info-category-text")
+			.text("");
+		
+		//type header
+		var typeHeader = d3.select(parentDiv).append("div")
+			.attr("class", "item-info-header");
+		typeHeader.append("strong")
+			.attr("class", "item-info-header")
+			.text("Type");
+		typeHeader.append("div")
+			.attr("class", "item-info-data")
+			.attr("id", "item-info-type-text")
+			.text("");
+			
+        //wiki link
         d3.select(parentDiv).append("a")
             .attr("target", "_blank")
+			.attr("id", "item-info-wiki-link")
             .attr("class", "item-info-wiki-link")
             .text("\u{1f517}Item Wiki");
 
-
+		//setup ui widgets for this view
         this.itemImage = this.parentElement.find("div").find("img");
-        this.itemNameText = this.parentElement.find("div").find("div");
-        this.itemWikiLink = this.parentElement.find(".item-info-wiki-link");
+        this.itemNameText = this.parentElement.find("#item-info-name-text");
+        this.itemWikiLink = this.parentElement.find("#item-info-wiki-link");
+		this.itemTimeText = this.parentElement.find("#item-info-time-text");
+		this.itemYieldText = this.parentElement.find("#item-info-yield-text");
+		this.itemCategoryText = this.parentElement.find("#item-info-category-text");
+		this.itemTypeText = this.parentElement.find("#item-info-type-text");
     }
 
     showItemInfo(itemId){
         this.itemImage.attr("src", itemIconLocation + itemId + ".png")
         this.itemNameText.text(recipes[itemId].name);
         this.itemWikiLink.attr("href", recipes[itemId].wiki_link);
-        this.itemWikiLink.attr("title", recipes[itemId].wiki_link)
+        this.itemWikiLink.attr("title", recipes[itemId].wiki_link);
+		this.itemTimeText.text(recipes[itemId].recipe.time);
+		this.itemYieldText.text(recipes[itemId].recipe.yield);
+		this.itemCategoryText.text(recipes[itemId].category);
+		this.itemTypeText.text(recipes[itemId].type);
     }
 
     clearItemInfo(){

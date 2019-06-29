@@ -314,3 +314,7 @@ h1{font-family: sans-serif;}
 }
 
 .item-info-wiki-link{}
+
+.item-info-data{
+	float: right;
+}
